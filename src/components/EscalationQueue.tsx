@@ -51,7 +51,7 @@ export function EscalationQueue() {
           {visible.map((e) => {
             const who = users.find((u) => u.id === e.userId)!;
             return (
-              <li key={e.id} className="px-4 py-3">
+              <li key={e.id} className="px-5 py-3">
                 <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
                   <Avatar name={who.name} tint={who.tint} size={26} />
                   <div className="min-w-0 flex-1">
@@ -70,7 +70,7 @@ export function EscalationQueue() {
                     </p>
 
                     {e.note && (
-                      <p className="mt-2 rounded-lg border border-line bg-sunken px-3 py-2 text-[13px]">
+                      <p className="mt-2 rounded-xl bg-sunken px-3 py-2 text-[13px]">
                         “{e.note}”
                       </p>
                     )}

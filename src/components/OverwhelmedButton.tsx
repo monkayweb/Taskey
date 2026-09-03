@@ -119,9 +119,9 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
             aria-modal="true"
             aria-label="Flag a bottleneck"
             onClick={(e) => e.stopPropagation()}
-            className="flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-line bg-surface shadow-2xl sm:rounded-2xl"
+            className="flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-surface shadow-[var(--shadow-pop)] sm:rounded-3xl"
           >
-            <header className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
+            <header className="flex items-start justify-between gap-3 border-b border-line px-5 py-4">
               <div>
                 <h2 className="text-sm font-semibold">Flag a bottleneck</h2>
                 <p className="mt-0.5 text-xs text-muted">
@@ -148,10 +148,10 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
                       type="button"
                       onClick={() => setSeverity(s.value)}
                       className={clsx(
-                        "rounded-lg border px-2.5 py-2 text-left transition-colors",
+                        "rounded-xl px-3 py-2.5 text-left ring-1 transition-colors",
                         severity === s.value
-                          ? "border-accent bg-accent-soft"
-                          : "border-line hover:bg-sunken",
+                          ? "bg-accent-soft ring-accent/40"
+                          : "ring-line hover:bg-sunken",
                       )}
                     >
                       <span className="block text-[13px] font-medium">{s.label}</span>
@@ -172,7 +172,7 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
                 </div>
 
                 {candidates.length === 0 ? (
-                  <p className="rounded-lg border border-line bg-sunken px-3 py-4 text-center text-xs text-muted">
+                  <p className="rounded-xl bg-sunken px-3 py-4 text-center text-xs text-muted">
                     Nothing open to flag — your list is clear.
                   </p>
                 ) : (
@@ -190,10 +190,10 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
                               <label
                                 key={key}
                                 className={clsx(
-                                  "flex cursor-pointer items-center gap-2.5 rounded-lg border px-2.5 py-2 text-[13px] transition-colors",
+                                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] ring-1 transition-colors",
                                   on
-                                    ? "border-accent/40 bg-accent-soft"
-                                    : "border-line hover:bg-sunken",
+                                    ? "bg-accent-soft ring-accent/40"
+                                    : "ring-line hover:bg-sunken",
                                 )}
                               >
                                 <input
@@ -237,7 +237,7 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
               </div>
             </div>
 
-            <footer className="flex items-center justify-between gap-3 border-t border-line bg-sunken px-4 py-3">
+            <footer className="flex items-center justify-between gap-3 border-t border-line bg-sunken px-5 py-4">
               <p className="text-[11px] text-muted">
                 Sends immediately and lands on the admin dashboard.
               </p>

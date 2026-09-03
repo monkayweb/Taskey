@@ -1,38 +1,52 @@
 @import "tailwindcss";
 
 /* --------------------------------------------------------------------------
-   Taskey deliberately commits to a single light theme: this is an operations
-   tool people stare at all day in bright offices and on site.
+   Taskey commits to a single light theme: soft violet on a lavender canvas.
+   Cards carry a shadow rather than a border, so panels read as floating
+   surfaces instead of boxed-in tables.
    -------------------------------------------------------------------------- */
 
 @theme inline {
-  --color-canvas: #f5f6f8;
+  --color-canvas: #f6f5fb;
   --color-surface: #ffffff;
-  --color-sunken: #fafbfc;
-  --color-line: #e5e7eb;
-  --color-line-strong: #d1d5db;
+  --color-sunken: #faf9fe;
+  --color-line: #edebf5;
+  --color-line-strong: #ddd9ec;
 
-  --color-ink: #111418;
-  --color-muted: #626b78;
-  --color-faint: #98a0ac;
+  --color-ink: #17141f;
+  --color-muted: #6b6580;
+  --color-faint: #9e98b3;
 
-  --color-accent: #4f46e5;
-  --color-accent-ink: #3730a3;
-  --color-accent-soft: #eef0fe;
+  --color-accent: #7c3aed;
+  --color-accent-ink: #5b21b6;
+  --color-accent-soft: #f1ecfe;
+  --color-accent-wash: #f5f2fe;
 
-  --color-ok: #0f7355;
-  --color-ok-soft: #e4f4ee;
-  --color-warn: #a4600a;
-  --color-warn-soft: #fdf2e0;
-  --color-danger: #b52424;
-  --color-danger-soft: #fdeceb;
+  /* Same violet ramp, used as the unfilled track behind a data mark. */
+  --color-track: #e9e3fd;
+
+  /* Status: dark steps for text, validated bright steps for data fills.
+     A status colour never carries meaning alone — always icon or label too. */
+  --color-ok: #0b7a2f;
+  --color-ok-fill: #0ca30c;
+  --color-ok-soft: #e7f7e7;
+  --color-warn: #8a5a00;
+  --color-warn-fill: #fab219;
+  --color-warn-soft: #fef4e0;
+  --color-danger: #b3261e;
+  --color-danger-fill: #d03b3b;
+  --color-danger-soft: #fcebea;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-card: 1rem;
 }
 
 :root {
   color-scheme: light;
+  --shadow-card: 0 1px 2px rgba(23, 20, 31, 0.03), 0 4px 14px rgba(23, 20, 31, 0.04);
+  --shadow-pop: 0 2px 6px rgba(23, 20, 31, 0.06), 0 12px 32px rgba(23, 20, 31, 0.1);
 }
 
 body {
@@ -44,7 +58,8 @@ body {
 
 @layer components {
   .card {
-    @apply rounded-xl border border-line bg-surface;
+    @apply rounded-2xl bg-surface;
+    box-shadow: var(--shadow-card);
   }
 
   /* Section heading used above every panel. */
@@ -53,26 +68,30 @@ body {
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-lg border text-sm
-           font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45;
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full text-sm
+           font-medium transition-all disabled:cursor-not-allowed disabled:opacity-45;
   }
-  .btn-md { @apply h-9 px-3.5; }
-  .btn-sm { @apply h-8 px-2.5 text-[13px]; }
+  .btn-md { @apply h-9 px-4; }
+  .btn-sm { @apply h-8 px-3 text-[13px]; }
 
   .btn-primary {
-    @apply border-accent bg-accent text-white hover:bg-accent-ink hover:border-accent-ink;
+    @apply bg-accent text-white hover:bg-accent-ink;
+    box-shadow: 0 1px 2px rgba(91, 33, 182, 0.2), 0 4px 12px rgba(124, 58, 237, 0.22);
+  }
+  .btn-primary:hover:not(:disabled) {
+    box-shadow: 0 1px 2px rgba(91, 33, 182, 0.24), 0 6px 18px rgba(124, 58, 237, 0.28);
   }
   .btn-ghost {
-    @apply border-line bg-surface text-ink hover:bg-sunken hover:border-line-strong;
+    @apply bg-sunken text-ink ring-1 ring-line hover:bg-accent-soft hover:ring-accent/25;
   }
   .btn-danger {
-    @apply border-danger/25 bg-danger-soft text-danger hover:border-danger/45;
+    @apply bg-danger-soft text-danger ring-1 ring-danger/15 hover:ring-danger/35;
   }
 
   .field {
-    @apply w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink
-           placeholder:text-faint focus:border-accent focus:outline-none
-           focus:ring-2 focus:ring-accent/15;
+    @apply w-full rounded-xl bg-sunken px-3 py-2 text-sm text-ink ring-1 ring-line
+           placeholder:text-faint focus:bg-surface focus:outline-none
+           focus:ring-2 focus:ring-accent/40;
   }
 
   /* Numeric columns in the KPI and audit tables. */

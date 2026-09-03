@@ -79,7 +79,7 @@ export function DailyChecklist({ log }: { log: DailyLog }) {
           />
         ) : (
           <>
-            <div className="px-4 pt-3">
+            <div className="px-5 pt-1">
               <Meter
                 className="h-2"
                 segments={[
@@ -94,7 +94,7 @@ export function DailyChecklist({ log }: { log: DailyLog }) {
               {log.blocks.map((block) => {
                 const needsReason = blockNeedsReason(block.status, block.skipReason);
                 return (
-                  <li key={block.id} className="px-4 py-3">
+                  <li key={block.id} className="px-5 py-3">
                     <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
                       <div className="w-[86px] shrink-0 pt-0.5">
                         <p className="font-mono text-[13px] tabular-nums leading-tight">
@@ -135,7 +135,7 @@ export function DailyChecklist({ log }: { log: DailyLog }) {
                           </div>
                         ) : (
                           <div className="mt-2 space-y-2">
-                            <div className="inline-flex overflow-hidden rounded-lg border border-line">
+                            <div className="inline-flex overflow-hidden rounded-full ring-1 ring-line">
                               {STATUS_OPTIONS.map((opt, i) => {
                                 const Icon = opt.icon;
                                 const active = block.status === opt.value;
@@ -230,7 +230,7 @@ export function DailyChecklist({ log }: { log: DailyLog }) {
               locked. The summary has gone to management.
             </p>
             {log.summaryNote && (
-              <p className="rounded-lg border border-line bg-sunken px-3 py-2 text-xs text-muted">
+              <p className="rounded-xl bg-sunken px-3 py-2 text-xs text-muted">
                 {log.summaryNote}
               </p>
             )}
@@ -312,7 +312,7 @@ function ExtraTasks({
           {log.extraTasks.map((t) => (
             <li
               key={t.id}
-              className="flex items-center gap-3 px-4 py-2.5 text-[13px]"
+              className="flex items-center gap-3 px-5 py-2.5 text-[13px]"
             >
               <span className="min-w-0 flex-1 truncate">{t.label}</span>
               <Badge>{CATEGORY_LABEL[t.category]}</Badge>
@@ -336,7 +336,7 @@ function ExtraTasks({
 
       {locked ? (
         log.extraTasks.length === 0 && (
-          <p className="px-4 py-4 text-xs text-muted">Nothing extra logged.</p>
+          <p className="px-5 py-4 text-xs text-muted">Nothing extra logged.</p>
         )
       ) : (
         <div className="flex flex-wrap gap-2 p-4 pt-3">

@@ -133,7 +133,7 @@ export default function AuditPage() {
         </button>
       </div>
 
-      <div className="card flex items-center gap-2 border-ok/25 bg-ok-soft px-4 py-2.5">
+      <div className="card flex items-center gap-2 bg-ok-soft px-5 py-3">
         <ShieldCheck size={16} className="shrink-0 text-ok" />
         <p className="text-[13px] text-ok">
           {audit.length.toLocaleString()} immutable entries. Submitted daily logs are
@@ -160,7 +160,7 @@ export default function AuditPage() {
         title={`${filtered.length.toLocaleString()} entries`}
         bodyClassName=""
       >
-        <div className="flex gap-1 overflow-x-auto border-b border-line px-3 py-2">
+        <div className="flex gap-1 overflow-x-auto border-b border-line px-4 pb-3">
           {GROUPS.map((g) => (
             <button
               key={g.value}
@@ -170,7 +170,7 @@ export default function AuditPage() {
                 setLimit(PAGE);
               }}
               className={clsx(
-                "whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors",
+                "whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors",
                 group === g.value
                   ? "bg-accent-soft text-accent-ink"
                   : "text-muted hover:bg-sunken",
@@ -189,7 +189,7 @@ export default function AuditPage() {
               <table className="w-full min-w-[720px] text-[13px]">
                 <thead>
                   <tr className="border-b border-line text-left text-[11px] uppercase tracking-[0.06em] text-faint">
-                    <th className="px-4 py-2 font-semibold">When</th>
+                    <th className="px-5 py-2 font-semibold">When</th>
                     <th className="px-3 py-2 font-semibold">Who</th>
                     <th className="px-3 py-2 font-semibold">Event</th>
                     <th className="px-3 py-2 font-semibold">Subject</th>
@@ -201,7 +201,7 @@ export default function AuditPage() {
                     const who = users.find((u) => u.id === e.actorId);
                     return (
                       <tr key={e.id} className="hover:bg-sunken">
-                        <td className="whitespace-nowrap px-4 py-2 font-mono text-[12px] tabular-nums text-muted">
+                        <td className="whitespace-nowrap px-5 py-2 font-mono text-[12px] tabular-nums text-muted">
                           {shortDate(e.at)} {clockTime(e.at)}
                         </td>
                         <td className="whitespace-nowrap px-3 py-2">

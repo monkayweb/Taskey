@@ -6,11 +6,11 @@ import type { ReactNode } from "react";
 export type Tone = "neutral" | "accent" | "ok" | "warn" | "danger";
 
 const TONE_BADGE: Record<Tone, string> = {
-  neutral: "bg-sunken text-muted border-line",
-  accent: "bg-accent-soft text-accent-ink border-accent/20",
-  ok: "bg-ok-soft text-ok border-ok/20",
-  warn: "bg-warn-soft text-warn border-warn/20",
-  danger: "bg-danger-soft text-danger border-danger/20",
+  neutral: "bg-sunken text-muted ring-line",
+  accent: "bg-accent-soft text-accent-ink ring-accent/15",
+  ok: "bg-ok-soft text-ok ring-ok/15",
+  warn: "bg-warn-soft text-warn ring-warn/15",
+  danger: "bg-danger-soft text-danger ring-danger/15",
 };
 
 const TONE_TEXT: Record<Tone, string> = {
@@ -21,12 +21,13 @@ const TONE_TEXT: Record<Tone, string> = {
   danger: "text-danger",
 };
 
-const TONE_BAR: Record<Tone, string> = {
-  neutral: "bg-line-strong",
+/** Validated data-fill steps — brighter than the text tokens of the same name. */
+const TONE_FILL: Record<Tone, string> = {
+  neutral: "bg-track",
   accent: "bg-accent",
-  ok: "bg-ok",
-  warn: "bg-warn",
-  danger: "bg-danger",
+  ok: "bg-ok-fill",
+  warn: "bg-warn-fill",
+  danger: "bg-danger-fill",
 };
 
 export function Badge({
@@ -41,7 +42,7 @@ export function Badge({
   return (
     <span
       className={clsx(
-        "inline-flex shrink-0 items-center gap-1 rounded-md border px-1.5 py-0.5",
+        "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 ring-1",
         "text-[11px] font-medium leading-4 whitespace-nowrap",
         TONE_BADGE[tone],
         className,
@@ -70,19 +71,19 @@ export function Panel({
   return (
     <section className={clsx("card overflow-hidden", className)}>
       {(title || action) && (
-        <header className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
+        <header className="flex items-start justify-between gap-3 px-5 pb-3 pt-4">
           <div className="min-w-0">
             {title && (
-              <h2 className="text-[13px] font-semibold text-ink">{title}</h2>
+              <h2 className="text-[15px] font-semibold tracking-tight text-ink">
+                {title}
+              </h2>
             )}
-            {subtitle && (
-              <p className="mt-0.5 text-xs text-muted">{subtitle}</p>
-            )}
+            {subtitle && <p className="mt-0.5 text-xs text-muted">{subtitle}</p>}
           </div>
           {action && <div className="shrink-0">{action}</div>}
         </header>
       )}
-      <div className={bodyClassName ?? "p-4"}>{children}</div>
+      <div className={bodyClassName ?? "px-5 pb-5"}>{children}</div>
     </section>
   );
 }
@@ -92,29 +93,46 @@ export function StatTile({
   value,
   hint,
   tone = "neutral",
+  icon,
 }: {
   label: string;
   value: ReactNode;
   hint?: ReactNode;
   tone?: Tone;
+  icon?: ReactNode;
 }) {
   return (
-    <div className="card px-4 py-3">
-      <p className="eyebrow">{label}</p>
+    <div className="card px-5 py-4">
+      <div className="flex items-start justify-between gap-2">
+        <p className="eyebrow">{label}</p>
+        {icon && (
+          <span
+            className={clsx(
+              "grid size-7 shrink-0 place-items-center rounded-full",
+              tone === "neutral" ? "bg-accent-soft text-accent" : TONE_BADGE[tone],
+            )}
+          >
+            {icon}
+          </span>
+        )}
+      </div>
       <p
         className={clsx(
-          "mt-1.5 font-mono text-2xl tabular-nums leading-none",
+          "mt-2 font-mono text-[28px] tabular-nums leading-none tracking-tight",
           TONE_TEXT[tone],
         )}
       >
         {value}
       </p>
-      {hint && <p className="mt-1.5 text-xs text-muted">{hint}</p>}
+      {hint && <p className="mt-2 text-xs text-muted">{hint}</p>}
     </div>
   );
 }
 
-/** Horizontal meter. `segments` render left-to-right in order. */
+/**
+ * Horizontal meter. Segments render left-to-right with a 2px surface gap
+ * between fills, so adjacent status colours never touch.
+ */
 export function Meter({
   segments,
   className,
@@ -126,7 +144,7 @@ export function Meter({
   return (
     <div
       className={clsx(
-        "flex h-1.5 w-full overflow-hidden rounded-full bg-line",
+        "flex h-2 w-full gap-[2px] overflow-hidden rounded-full bg-track",
         className,
       )}
     >
@@ -135,8 +153,8 @@ export function Meter({
           <div
             key={i}
             title={s.title}
-            className={TONE_BAR[s.tone]}
-            style={{ width: `${(s.value / total) * 100}%` }}
+            className={clsx("rounded-full", TONE_FILL[s.tone])}
+            style={{ width: `calc(${(s.value / total) * 100}% - 2px)` }}
           />
         ),
       )}
@@ -154,10 +172,14 @@ export function Empty({
   detail?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1.5 px-4 py-10 text-center">
-      {icon && <div className="text-faint">{icon}</div>}
-      <p className="text-[13px] font-medium text-ink">{title}</p>
-      {detail && <p className="max-w-sm text-xs text-muted">{detail}</p>}
+    <div className="flex flex-col items-center gap-2 px-5 py-12 text-center">
+      {icon && (
+        <div className="grid size-11 place-items-center rounded-full bg-accent-soft text-accent">
+          {icon}
+        </div>
+      )}
+      <p className="text-[14px] font-medium text-ink">{title}</p>
+      {detail && <p className="max-w-sm text-xs leading-relaxed text-muted">{detail}</p>}
     </div>
   );
 }
@@ -166,10 +188,12 @@ export function Avatar({
   name,
   tint,
   size = 28,
+  ring,
 }: {
   name: string;
   tint: string;
   size?: number;
+  ring?: boolean;
 }) {
   const initials = name
     .split(" ")
@@ -178,7 +202,10 @@ export function Avatar({
     .join("");
   return (
     <span
-      className="inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white"
+      className={clsx(
+        "inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white",
+        ring && "ring-2 ring-surface",
+      )}
       style={{
         width: size,
         height: size,
@@ -189,6 +216,37 @@ export function Avatar({
     >
       {initials}
     </span>
+  );
+}
+
+/** Overlapping avatars, as on the reference progress cards. */
+export function AvatarStack({
+  people,
+  size = 22,
+  max = 3,
+}: {
+  people: { name: string; tint: string }[];
+  size?: number;
+  max?: number;
+}) {
+  const shown = people.slice(0, max);
+  const rest = people.length - shown.length;
+  return (
+    <div className="flex items-center">
+      {shown.map((p, i) => (
+        <span key={p.name} className={i > 0 ? "-ml-2" : undefined}>
+          <Avatar name={p.name} tint={p.tint} size={size} ring />
+        </span>
+      ))}
+      {rest > 0 && (
+        <span
+          className="-ml-2 grid place-items-center rounded-full bg-accent-soft font-semibold text-accent-ink ring-2 ring-surface"
+          style={{ width: size, height: size, fontSize: size * 0.38 }}
+        >
+          +{rest}
+        </span>
+      )}
+    </div>
   );
 }
 

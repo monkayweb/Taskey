@@ -85,7 +85,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
             : "border-l-transparent",
       )}
     >
-      <div className="flex flex-wrap items-start gap-x-3 gap-y-2 px-4 py-3">
+      <div className="flex flex-wrap items-start gap-x-3 gap-y-2 px-5 py-3">
         <Avatar name={owner.name} tint={owner.tint} size={26} />
 
         <div className="min-w-0 flex-1">
@@ -126,7 +126,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
       </div>
 
       {open && (
-        <div className="space-y-3 border-t border-line bg-sunken px-4 py-3">
+        <div className="space-y-3 border-t border-line bg-sunken px-5 py-3">
           {isOpen(lead) && (
             <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
               <input

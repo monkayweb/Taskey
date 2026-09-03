@@ -94,7 +94,7 @@ export default function ProjectsPage() {
                 }
                 bodyClassName=""
               >
-                <div className="px-4 pt-3">
+                <div className="px-5 pt-1">
                   <Meter
                     segments={[
                       { value: doneCount, tone: "ok" },
@@ -114,7 +114,7 @@ export default function ProjectsPage() {
                   {project.milestones.map((m) => {
                     const isLate = !m.done && m.dueDate < today;
                     return (
-                      <li key={m.id} className="px-4 py-2.5">
+                      <li key={m.id} className="px-5 py-2.5">
                         <label className="flex cursor-pointer items-center gap-2.5">
                           <button
                             type="button"

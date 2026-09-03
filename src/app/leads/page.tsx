@@ -142,14 +142,14 @@ export default function LeadsPage() {
         }
         bodyClassName=""
       >
-        <div className="flex gap-1 overflow-x-auto border-b border-line px-3 py-2">
+        <div className="flex gap-1 overflow-x-auto border-b border-line px-4 pb-3">
           {FILTERS.map((f) => (
             <button
               key={f.value}
               type="button"
               onClick={() => setFilter(f.value)}
               className={clsx(
-                "whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors",
+                "whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors",
                 filter === f.value
                   ? "bg-accent-soft text-accent-ink"
                   : "text-muted hover:bg-sunken",

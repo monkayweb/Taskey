@@ -16,6 +16,7 @@ import {
   STATUS_TONE,
 } from "@/lib/labels";
 import { EscalationQueue } from "@/components/EscalationQueue";
+import { WeeklyProgress } from "@/components/WeeklyProgress";
 import {
   Avatar,
   Badge,
@@ -122,6 +123,8 @@ export default function AdminPage() {
         />
       </div>
 
+      <WeeklyProgress scope="team" />
+
       <EscalationQueue />
 
       {/* --- today's submissions ------------------------------------------ */}
@@ -140,7 +143,7 @@ export default function AdminPage() {
             const notDone = blocks.filter((b) => b.status !== "done" && b.status !== "pending");
 
             return (
-              <li key={user.id} className="px-4 py-3">
+              <li key={user.id} className="px-5 py-3">
                 <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
                   <Avatar name={user.name} tint={user.tint} size={26} />
                   <div className="min-w-0 flex-1">
@@ -181,7 +184,7 @@ export default function AdminPage() {
                     )}
 
                     {log?.summaryNote && (
-                      <p className="mt-2 rounded-lg border border-line bg-sunken px-3 py-2 text-[13px]">
+                      <p className="mt-2 rounded-xl bg-sunken px-3 py-2 text-[13px]">
                         “{log.summaryNote}”
                       </p>
                     )}
@@ -223,7 +226,7 @@ export default function AdminPage() {
           <table className="w-full min-w-[820px] text-[13px]">
             <thead>
               <tr className="border-b border-line text-left text-[11px] uppercase tracking-[0.06em] text-faint">
-                <th className="px-4 py-2 font-semibold">Person</th>
+                <th className="px-5 py-2 font-semibold">Person</th>
                 <th className="px-3 py-2 text-right font-semibold">Score</th>
                 <th className="px-3 py-2 text-right font-semibold">Logs</th>
                 <th className="px-3 py-2 text-right font-semibold">Blocks done</th>
@@ -238,7 +241,7 @@ export default function AdminPage() {
             <tbody className="divide-y divide-line">
               {kpis.map((k) => (
                 <tr key={k.user.id} className="hover:bg-sunken">
-                  <td className="px-4 py-2.5">
+                  <td className="px-5 py-2.5">
                     <div className="flex items-center gap-2">
                       <Avatar name={k.user.name} tint={k.user.tint} size={22} />
                       <div className="min-w-0">
@@ -297,7 +300,7 @@ export default function AdminPage() {
                 <li key={`${f.kind}:${f.refId}`}>
                   <Link
                     href={f.href}
-                    className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-sunken"
+                    className="flex items-center gap-3 px-5 py-2.5 transition-colors hover:bg-sunken"
                   >
                     {owner && <Avatar name={owner.name} tint={owner.tint} size={22} />}
                     <div className="min-w-0 flex-1">

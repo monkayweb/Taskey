@@ -37,7 +37,7 @@ export function DailyActions({ flags }: { flags: Flag[] }) {
             <li key={`${flag.kind}:${flag.refId}`}>
               <Link
                 href={flag.href}
-                className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-sunken"
+                className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-sunken"
               >
                 <span
                   className={
