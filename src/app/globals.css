@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/* --------------------------------------------------------------------------
+   Taskey deliberately commits to a single light theme: this is an operations
+   tool people stare at all day in bright offices and on site.
+   -------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-canvas: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-sunken: #fafbfc;
+  --color-line: #e5e7eb;
+  --color-line-strong: #d1d5db;
+
+  --color-ink: #111418;
+  --color-muted: #626b78;
+  --color-faint: #98a0ac;
+
+  --color-accent: #4f46e5;
+  --color-accent-ink: #3730a3;
+  --color-accent-soft: #eef0fe;
+
+  --color-ok: #0f7355;
+  --color-ok-soft: #e4f4ee;
+  --color-warn: #a4600a;
+  --color-warn-soft: #fdf2e0;
+  --color-danger: #b52424;
+  --color-danger-soft: #fdeceb;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-line bg-surface;
+  }
+
+  /* Section heading used above every panel. */
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-faint;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg border text-sm
+           font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45;
+  }
+  .btn-md { @apply h-9 px-3.5; }
+  .btn-sm { @apply h-8 px-2.5 text-[13px]; }
+
+  .btn-primary {
+    @apply border-accent bg-accent text-white hover:bg-accent-ink hover:border-accent-ink;
+  }
+  .btn-ghost {
+    @apply border-line bg-surface text-ink hover:bg-sunken hover:border-line-strong;
+  }
+  .btn-danger {
+    @apply border-danger/25 bg-danger-soft text-danger hover:border-danger/45;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink
+           placeholder:text-faint focus:border-accent focus:outline-none
+           focus:ring-2 focus:ring-accent/15;
+  }
+
+  /* Numeric columns in the KPI and audit tables. */
+  .num {
+    @apply text-right font-mono text-[13px] tabular-nums;
+  }
+}
+
+/* Keep long tables scrollable inside their panel instead of the page. */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
