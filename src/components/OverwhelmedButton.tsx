@@ -24,7 +24,13 @@ const SEVERITIES: {
  * One click to say "I'm swamped", then a forced pick of *which* items are
  * falling behind, because a bare alert with no specifics can't be acted on.
  */
-export function OverwhelmedButton({ compact }: { compact?: boolean }) {
+export function OverwhelmedButton({
+  compact,
+  onDark,
+}: {
+  compact?: boolean;
+  onDark?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const now = useNow();
   const { logs, leads, projects, currentUserId, raiseEscalation, escalations } =
@@ -93,7 +99,10 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
         type="button"
         onClick={() => setOpen(true)}
         className={clsx(
-          "btn btn-danger w-full",
+          "btn w-full",
+          onDark
+            ? "bg-white text-accent-ink hover:bg-white/90"
+            : "btn-danger",
           compact ? "btn-sm" : "btn-md",
         )}
       >
@@ -101,7 +110,7 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
         {myOpen ? "Escalation open" : "I'm overwhelmed"}
       </button>
 
-      {myOpen && !compact && (
+      {myOpen && !compact && !onDark && (
         <p className="mt-1.5 text-[11px] leading-snug text-muted">
           Management was notified{" "}
           {myOpen.status === "acknowledged" ? "and has seen it" : "and has not responded yet"}.

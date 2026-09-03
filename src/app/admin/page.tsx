@@ -16,7 +16,8 @@ import {
   STATUS_TONE,
 } from "@/lib/labels";
 import { EscalationQueue } from "@/components/EscalationQueue";
-import { WeeklyProgress } from "@/components/WeeklyProgress";
+import { OverviewChart } from "@/components/OverviewChart";
+import { WeekRing } from "@/components/WeekRing";
 import {
   Avatar,
   Badge,
@@ -123,7 +124,10 @@ export default function AdminPage() {
         />
       </div>
 
-      <WeeklyProgress scope="team" />
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <OverviewChart scope="team" />
+        <WeekRing scope="team" />
+      </div>
 
       <EscalationQueue />
 

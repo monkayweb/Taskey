@@ -3,9 +3,18 @@
 import clsx from "clsx";
 import type { ReactNode } from "react";
 
-export type Tone = "neutral" | "accent" | "ok" | "warn" | "danger";
+export type Tone =
+  | "neutral"
+  | "accent"
+  | "pink"
+  | "purple"
+  | "ok"
+  | "warn"
+  | "danger";
 
 const TONE_BADGE: Record<Tone, string> = {
+  pink: "bg-pink-soft text-pink ring-pink/15",
+  purple: "bg-purple-soft text-purple ring-purple/15",
   neutral: "bg-sunken text-muted ring-line",
   accent: "bg-accent-soft text-accent-ink ring-accent/15",
   ok: "bg-ok-soft text-ok ring-ok/15",
@@ -14,6 +23,8 @@ const TONE_BADGE: Record<Tone, string> = {
 };
 
 const TONE_TEXT: Record<Tone, string> = {
+  pink: "text-pink",
+  purple: "text-purple",
   neutral: "text-ink",
   accent: "text-accent",
   ok: "text-ok",
@@ -21,8 +32,20 @@ const TONE_TEXT: Record<Tone, string> = {
   danger: "text-danger",
 };
 
+const TONE_STROKE: Record<Tone, string> = {
+  neutral: "stroke-line-strong",
+  accent: "stroke-accent",
+  pink: "stroke-pink",
+  purple: "stroke-purple",
+  ok: "stroke-ok-fill",
+  warn: "stroke-warn-fill",
+  danger: "stroke-danger-fill",
+};
+
 /** Validated data-fill steps, brighter than the text tokens of the same name. */
 const TONE_FILL: Record<Tone, string> = {
+  pink: "bg-pink",
+  purple: "bg-purple",
   neutral: "bg-track",
   accent: "bg-accent",
   ok: "bg-ok-fill",
@@ -251,3 +274,229 @@ export function AvatarStack({
 }
 
 export const pctText = (n: number) => `${Math.round(n * 100)}%`;
+
+
+/** Underlined period tabs, as on the overview panel. */
+export function Tabs<T extends string>({
+  value,
+  options,
+  onChange,
+}: {
+  value: T;
+  options: { value: T; label: string }[];
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="flex items-center gap-1" role="tablist">
+      {options.map((o) => {
+        const active = o.value === value;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(o.value)}
+            className={clsx(
+              "relative px-2.5 pb-1.5 pt-1 text-[13px] font-medium transition-colors",
+              active ? "text-ink" : "text-faint hover:text-muted",
+            )}
+          >
+            {o.label}
+            {active && (
+              <span className="absolute inset-x-2 -bottom-px h-[2px] rounded-full bg-accent" />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * A ring meter: one ratio in the centre, with the parts that make it up as
+ * ring segments. Segments carry a small gap so adjacent colours never touch,
+ * and the legend names every one, so colour is never the only channel.
+ */
+export function RingMeter({
+  segments,
+  centerValue,
+  centerLabel,
+  size = 168,
+  thickness = 16,
+}: {
+  segments: { value: number; tone: Tone; label: string }[];
+  centerValue: ReactNode;
+  centerLabel?: string;
+  size?: number;
+  thickness?: number;
+}) {
+  const total = segments.reduce((a, s) => a + s.value, 0);
+  const r = (size - thickness) / 2;
+  const circumference = 2 * Math.PI * r;
+  const gap = total > 0 ? 3 : 0;
+
+  // Offsets are prefix sums rather than a running accumulator, so nothing is
+  // reassigned during render.
+  const visible = segments.filter((s) => s.value > 0);
+  const lengths = visible.map((s) => (s.value / total) * circumference);
+  const arcs = visible.map((s, i) => ({
+    ...s,
+    len: Math.max(lengths[i] - gap, 0.5),
+    offset: lengths.slice(0, i).reduce((a, b) => a + b, 0),
+  }));
+
+  return (
+    <div className="relative mx-auto" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90" aria-hidden>
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          strokeWidth={thickness}
+          className="stroke-track"
+        />
+        {arcs.map((a, i) => (
+          <circle
+            key={i}
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            fill="none"
+            strokeWidth={thickness}
+            strokeLinecap="round"
+            strokeDasharray={`${a.len} ${circumference - a.len}`}
+            strokeDashoffset={-a.offset}
+            className={TONE_STROKE[a.tone]}
+          />
+        ))}
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="font-mono text-[30px] font-medium tabular-nums leading-none">
+          {centerValue}
+        </span>
+        {centerLabel && (
+          <span className="mt-1 text-[11px] text-muted">{centerLabel}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Legend row: a colour dot plus its name and value, so identity is textual. */
+export function LegendItem({
+  tone,
+  label,
+  value,
+}: {
+  tone: Tone;
+  label: string;
+  value?: ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-1.5 text-[11px]">
+      <span className={clsx("size-2 shrink-0 rounded-full", TONE_FILL[tone])} />
+      <span className="min-w-0 flex-1 truncate text-muted">{label}</span>
+      {value !== undefined && (
+        <span className="font-mono tabular-nums text-ink">{value}</span>
+      )}
+    </div>
+  );
+}
+
+const SQUARE: Record<Tone, string> = {
+  neutral: "bg-sunken text-ink",
+  accent: "bg-accent text-white",
+  pink: "bg-pink text-white",
+  purple: "bg-purple text-white",
+  ok: "bg-ok-fill text-white",
+  warn: "bg-warn-fill text-white",
+  danger: "bg-danger-fill text-white",
+};
+
+/** Filled stat square, as on the habits row. Colour here is decorative. */
+export function StatSquare({
+  tone,
+  icon,
+  value,
+  label,
+}: {
+  tone: Tone;
+  icon: ReactNode;
+  value: ReactNode;
+  label: string;
+}) {
+  return (
+    <div className={clsx("rounded-2xl px-3 py-3", SQUARE[tone])}>
+      <span className="grid size-7 place-items-center rounded-lg bg-white/20">
+        {icon}
+      </span>
+      <p className="mt-2.5 font-mono text-[20px] font-medium tabular-nums leading-none">
+        {value}
+      </p>
+      <p className="mt-1 truncate text-[11px] opacity-85">{label}</p>
+    </div>
+  );
+}
+
+/**
+ * A progress row with the name inside the filled bar, as on the In Progress
+ * panel. All bars share one hue because they all mean the same thing; a bar
+ * only changes colour when it is actually behind.
+ */
+export function ProgressRow({
+  label,
+  detail,
+  pct,
+  behind,
+}: {
+  label: string;
+  detail: string;
+  pct: number;
+  behind?: boolean;
+}) {
+  // The bar width always tells the truth about pct, so the label only sits
+  // inside it when the fill is wide enough to hold the text.
+  const inside = pct >= 0.45;
+
+  return (
+    <div>
+      <span
+        className={clsx(
+          "font-mono text-[11px] font-medium tabular-nums",
+          behind ? "text-danger" : "text-accent",
+        )}
+      >
+        {Math.round(pct * 100)}%
+      </span>
+
+      <div className="mt-1 flex items-center gap-2">
+        <div className="h-7 min-w-0 flex-1 overflow-hidden rounded-full bg-track">
+          {/* Nothing done yet means an empty track, not a coloured stub. */}
+          <div
+            className={clsx(
+              "flex h-full items-center rounded-full",
+              inside && "pl-3 pr-2",
+              behind ? "bg-danger-fill" : "bg-accent",
+            )}
+            style={{ width: pct === 0 ? 0 : `${Math.max(pct * 100, 7)}%` }}
+          >
+            {inside && (
+              <span className="truncate text-[12px] font-medium text-white">
+                {label}
+              </span>
+            )}
+          </div>
+        </div>
+        {!inside && (
+          <span className="max-w-[58%] truncate text-[12px] font-medium">
+            {label}
+          </span>
+        )}
+      </div>
+
+      <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-muted">{detail}</p>
+    </div>
+  );
+}

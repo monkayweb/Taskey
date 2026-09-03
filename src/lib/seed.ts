@@ -161,7 +161,7 @@ export interface Seed {
 export function buildSeed(now: Date): Seed {
   const iso = (d: Date) => d.toISOString();
   const today = dayKey(now);
-  const days = workingDays(now, 16);
+  const days = workingDays(now, 72);
   const employees = USERS.filter((u) => u.role === "employee");
 
   const logs: DailyLog[] = [];

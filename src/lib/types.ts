@@ -204,6 +204,7 @@ export type AuditType =
   | "lead.responded"
   | "lead.stage_changed"
   | "lead.activity"
+  | "project.created"
   | "milestone.completed"
   | "escalation.raised"
   | "escalation.acknowledged"

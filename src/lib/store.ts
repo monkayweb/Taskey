@@ -68,6 +68,7 @@ interface TaskeyState {
   setStage: (leadId: string, stage: LeadStage) => void;
 
   // 3. Projects and escalation
+  addProject: (input: { name: string; client: string; dueDate: string }) => void;
   toggleMilestone: (projectId: string, milestoneId: string) => void;
   raiseEscalation: (input: {
     severity: EscalationSeverity;
@@ -385,6 +386,31 @@ export const useTaskey = create<TaskeyState>()(
 
       // --- projects and escalation -----------------------------------------
 
+      addProject: ({ name, client, dueDate }) => {
+        const actor = get().currentUserId;
+        set((s) => ({
+          projects: [
+            {
+              id: uid("pj"),
+              name,
+              client,
+              ownerId: actor,
+              status: "active",
+              dueDate,
+              milestones: [],
+            },
+            ...s.projects,
+          ],
+          audit: record(
+            s.audit,
+            actor,
+            "project.created",
+            name,
+            `New project for ${client}, due ${dueDate}`,
+          ),
+        }));
+      },
+
       toggleMilestone: (projectId, milestoneId) => {
         const project = get().projects.find((p) => p.id === projectId);
         const milestone = project?.milestones.find((m) => m.id === milestoneId);
@@ -488,6 +514,10 @@ export const useTaskey = create<TaskeyState>()(
     }),
     {
       name: "taskey.v1",
+      // The seed's shape and history length change between releases, so a
+      // bump replaces stale demo data instead of leaving a half-empty chart.
+      version: 2,
+      migrate: () => ({ ...buildSeed(new Date()), currentUserId: "u_thandi" }),
       // The server has no localStorage, so rehydration is driven explicitly
       // from the client in <TaskeyGate>. Without this the first paint would
       // render seed data and then mismatch on hydration.

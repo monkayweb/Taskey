@@ -44,6 +44,21 @@ ignoring it, and a weekly KPI table derived entirely from the submissions
 (40% blocks completed, 30% logs submitted, 30% quotes followed up in time). The
 audit trail is append-only and exports to CSV.
 
+## Design
+
+Indigo and pink on a periwinkle ground, with the whole app on one floating
+white sheet. Single light theme by choice: this is a tool people use all day in
+bright offices and on site.
+
+Chart colour is picked by the job the data does, not by the brand. The overview
+chart's three series are block *statuses*, so they wear the status palette
+(green, amber, red) rather than indigo and pink, and they are always ordered
+completed to partly to missed, because amber sitting between green and red is
+what makes the trio separable for red/green colour blindness. Amber is below the
+3:1 contrast floor against white, so every use of it carries a text label or a
+legend entry and never colour alone. Brand indigo and pink carry the chrome and
+the decorative stat squares, where colour is not encoding a value.
+
 ## Layout
 
 ```

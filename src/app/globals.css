@@ -1,33 +1,44 @@
 @import "tailwindcss";
 
 /* --------------------------------------------------------------------------
-   Taskey commits to a single light theme: soft violet on a lavender canvas.
-   Cards carry a shadow rather than a border, so panels read as floating
-   surfaces instead of boxed-in tables.
+   Taskey: indigo and pink on a periwinkle ground, with the whole app sitting
+   on a floating white sheet. Single light theme by choice.
    -------------------------------------------------------------------------- */
 
 @theme inline {
-  /* Neutral greys, no violet cast: violet is reserved for accents and data. */
-  --color-canvas: #ffffff;
+  /* The periwinkle behind the sheet, and the sheet itself. */
+  --color-canvas: #e6e8f9;
+  --color-sheet: #ffffff;
+  --color-content: #f6f7fc;
+
   --color-surface: #ffffff;
-  --color-sunken: #f7f7f9;
-  --color-line: #e8e8ed;
-  --color-line-strong: #d5d5dd;
+  --color-sunken: #f4f5fa;
+  --color-line: #e8e9f2;
+  --color-line-strong: #d6d8e6;
 
-  --color-ink: #16161a;
-  --color-muted: #696971;
-  --color-faint: #9a9aa4;
+  --color-ink: #1a1c2b;
+  --color-muted: #6b6e85;
+  --color-faint: #9a9db4;
 
-  --color-accent: #7c3aed;
-  --color-accent-ink: #5b21b6;
-  --color-accent-soft: #f1ecfe;
-  --color-accent-wash: #f5f2fe;
+  /* Brand. Indigo carries the chrome, pink is the secondary accent.
+     Both pass contrast and mutual separation against white. */
+  --color-accent: #4f57d2;
+  --color-accent-ink: #3a41ab;
+  --color-accent-soft: #ecedfb;
+  --color-accent-wash: #f4f5fe;
+  --color-pink: #ec4899;
+  --color-pink-soft: #fdeef6;
+  --color-purple: #8b5cf6;
+  --color-purple-soft: #f2ecfe;
 
-  /* Same violet ramp, used as the unfilled track behind a data mark. */
-  --color-track: #e9e3fd;
+  /* Same ramp as the accent, used as the unfilled track behind a data mark. */
+  --color-track: #e7e9f6;
 
-  /* Status: dark steps for text, validated bright steps for data fills.
-     A status colour never carries meaning alone; always an icon or label too. */
+  /* Status. Dark steps for text, validated bright steps for data fills.
+     Charts must order these done -> partly -> missed so amber sits between
+     green and red; that ordering is what clears the CVD separation check.
+     Amber is sub-3:1 on white by design, so every use pairs it with a text
+     label or legend, never colour alone. */
   --color-ok: #0b7a2f;
   --color-ok-fill: #0ca30c;
   --color-ok-soft: #e7f7e7;
@@ -40,16 +51,14 @@
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-
-  --radius-card: 1rem;
 }
 
 :root {
   color-scheme: light;
-  --shadow-card: 0 1px 2px rgba(22, 22, 26, 0.03), 0 2px 8px rgba(22, 22, 26, 0.03);
-  --shadow-pop: 0 2px 6px rgba(22, 22, 26, 0.06), 0 12px 32px rgba(22, 22, 26, 0.1);
-  /* Sidebar lift: the hairline does the separating, the shadow softens it. */
-  --shadow-rail: 6px 0 20px rgba(22, 22, 26, 0.05);
+  --shadow-card: 0 1px 2px rgba(26, 28, 43, 0.03), 0 2px 8px rgba(26, 28, 43, 0.04);
+  --shadow-pop: 0 2px 6px rgba(26, 28, 43, 0.07), 0 14px 36px rgba(26, 28, 43, 0.12);
+  --shadow-sheet: 0 10px 44px rgba(26, 28, 43, 0.1);
+  --shadow-accent: 0 1px 2px rgba(58, 65, 171, 0.22), 0 6px 16px rgba(79, 87, 210, 0.26);
 }
 
 body {
@@ -79,10 +88,7 @@ body {
 
   .btn-primary {
     @apply bg-accent text-white hover:bg-accent-ink;
-    box-shadow: 0 1px 2px rgba(91, 33, 182, 0.2), 0 4px 12px rgba(124, 58, 237, 0.22);
-  }
-  .btn-primary:hover:not(:disabled) {
-    box-shadow: 0 1px 2px rgba(91, 33, 182, 0.24), 0 6px 18px rgba(124, 58, 237, 0.28);
+    box-shadow: var(--shadow-accent);
   }
   .btn-ghost {
     @apply bg-sunken text-ink ring-1 ring-line hover:bg-accent-soft hover:ring-accent/25;

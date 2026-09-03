@@ -17,6 +17,7 @@ const TYPE_LABEL: Record<AuditType, string> = {
   "lead.responded": "First response",
   "lead.stage_changed": "Stage changed",
   "lead.activity": "Lead activity",
+  "project.created": "Project created",
   "milestone.completed": "Milestone closed",
   "escalation.raised": "Escalation raised",
   "escalation.acknowledged": "Escalation seen",
@@ -31,6 +32,7 @@ const TYPE_TONE: Record<AuditType, Tone> = {
   "lead.responded": "ok",
   "lead.stage_changed": "neutral",
   "lead.activity": "neutral",
+  "project.created": "accent",
   "milestone.completed": "ok",
   "escalation.raised": "danger",
   "escalation.acknowledged": "accent",
@@ -58,6 +60,7 @@ const GROUPS: { value: string; label: string; types: AuditType[] }[] = [
     value: "delivery",
     label: "Delivery & escalations",
     types: [
+      "project.created",
       "milestone.completed",
       "escalation.raised",
       "escalation.acknowledged",
