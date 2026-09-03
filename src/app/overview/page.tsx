@@ -1,28 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  BadgeCheck,
-  CalendarClock,
-  Clock,
-  FileText,
-  Target,
-} from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, BadgeCheck, Clock, FileText, Target } from "lucide-react";
 import { useTaskey } from "@/lib/store";
 import { useMyFlags, useTodayLog, useWeekKpis } from "@/lib/selectors";
 import { useNow } from "@/lib/now";
 import { blockMinutes, dayKey, workWeek } from "@/lib/date";
-import { DailyChecklist } from "@/components/DailyChecklist";
-import { DailyActions } from "@/components/DailyActions";
-import { OverwhelmedButton } from "@/components/OverwhelmedButton";
 import { OverviewChart } from "@/components/OverviewChart";
 import { WeekRing } from "@/components/WeekRing";
 import { InProgressPanel } from "@/components/InProgressPanel";
-import { AgendaRail } from "@/components/AgendaRail";
 import { TeamList } from "@/components/TeamList";
-import { Empty, Panel, StatSquare, pctText } from "@/components/ui";
+import { UrgentCard } from "@/components/UrgentCard";
+import { OverwhelmedButton } from "@/components/OverwhelmedButton";
+import { Meter, Panel, StatSquare, pctText } from "@/components/ui";
 
-export default function TodayPage() {
+export default function OverviewPage() {
   const now = useNow();
   const today = dayKey(now);
   const { currentUserId, users, ensureLog, projects, escalations, logs } =
@@ -30,8 +23,6 @@ export default function TodayPage() {
   const me = users.find((u) => u.id === currentUserId)!;
   const isEmployee = me.role === "employee";
 
-  // Today's log is created lazily on first visit from the calendar templates,
-  // so a new hire's first day works with no setup.
   useEffect(() => {
     if (isEmployee) ensureLog(me.id, today);
   }, [me.id, isEmployee, today, ensureLog]);
@@ -48,7 +39,6 @@ export default function TodayPage() {
     (e) => e.userId === me.id && e.status !== "resolved",
   );
 
-  // Hours actually logged this week, credited the same way the score is.
   const week = workWeek(now);
   const hoursLogged =
     logs
@@ -61,6 +51,11 @@ export default function TodayPage() {
         return total + blocks + l.extraTasks.reduce((a, t) => a + t.minutes, 0);
       }, 0) / 60;
 
+  const done = log?.blocks.filter((b) => b.status === "done").length ?? 0;
+  const partial = log?.blocks.filter((b) => b.status === "partial").length ?? 0;
+  const missed = log?.blocks.filter((b) => b.status === "missed").length ?? 0;
+  const pending = log?.blocks.filter((b) => b.status === "pending").length ?? 0;
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -70,10 +65,8 @@ export default function TodayPage() {
           </h1>
           <p className="mt-0.5 text-[13px] text-muted">
             {isEmployee
-              ? log?.submittedAt
-                ? "Your day is submitted and locked. Anything still flagged is waiting on you."
-                : "Tick off your time blocks before you clock out. Everything else here is generated for you."
-              : "You have no calendar blocks. Switch to a team member in the sidebar to see their checklist."}
+              ? "Here is where your day stands. Your tasks live on the next page."
+              : "You have no calendar blocks. Switch to a team member in the sidebar to see their day."}
           </p>
         </div>
         <div className="md:hidden">{isEmployee && <OverwhelmedButton compact />}</div>
@@ -95,9 +88,40 @@ export default function TodayPage() {
         </div>
       )}
 
+      <UrgentCard flags={flags} tasksHref="/tasks" />
+
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
-        {/* --- main column ------------------------------------------- */}
         <div className="min-w-0 space-y-5">
+          {log && log.blocks.length > 0 && (
+            <Panel
+              title="Today's checklist"
+              subtitle={
+                log.submittedAt
+                  ? "Submitted and locked"
+                  : `${pending} of ${log.blocks.length} blocks still to log`
+              }
+              action={
+                <Link href="/tasks" className="btn btn-primary btn-sm">
+                  {log.submittedAt ? "Review" : "Open tasks"}
+                  <ArrowRight size={14} />
+                </Link>
+              }
+            >
+              <Meter
+                segments={[
+                  { value: done, tone: "ok", title: `${done} done` },
+                  { value: partial, tone: "warn", title: `${partial} partly done` },
+                  { value: missed, tone: "danger", title: `${missed} missed` },
+                  { value: pending, tone: "neutral", title: `${pending} not logged` },
+                ]}
+              />
+              <p className="mt-2 text-xs text-muted">
+                {done} done · {partial} partly done · {missed} missed
+                {pending > 0 && ` · ${pending} not logged`}
+              </p>
+            </Panel>
+          )}
+
           <OverviewChart scope={isEmployee ? "me" : "team"} />
 
           {myKpi && (
@@ -133,29 +157,11 @@ export default function TodayPage() {
               </div>
             </Panel>
           )}
-
-          <DailyActions flags={flags} />
-
-          <div id="submission" className="scroll-mt-4">
-            {log ? (
-              <DailyChecklist log={log} />
-            ) : (
-              <Panel title="Today's time blocks">
-                <Empty
-                  icon={<CalendarClock size={20} />}
-                  title="No checklist for this account"
-                  detail="Only team members with calendar blocks get a daily log. Switch user in the sidebar to see one."
-                />
-              </Panel>
-            )}
-          </div>
         </div>
 
-        {/* --- right rail -------------------------------------------- */}
         <div className="space-y-5">
           <InProgressPanel projects={myProjects} />
           <WeekRing scope={isEmployee ? "me" : "team"} />
-          {isEmployee && <AgendaRail me={me} />}
           <TeamList showScores={me.role === "admin"} />
         </div>
       </div>

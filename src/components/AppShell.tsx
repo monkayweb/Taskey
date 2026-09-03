@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import {
   Bell,
-  CalendarCheck,
+  LayoutGrid,
+  ListChecks,
   ChevronDown,
   CircleHelp,
   FolderKanban,
@@ -28,12 +29,13 @@ import { GlobalSearch } from "./GlobalSearch";
 type NavItem = {
   href: string;
   label: string;
-  icon: typeof CalendarCheck;
+  icon: typeof LayoutGrid;
   roles: Role[];
 };
 
 const NAV: NavItem[] = [
-  { href: "/today", label: "My day", icon: CalendarCheck, roles: ["employee", "admin"] },
+  { href: "/overview", label: "Overview", icon: LayoutGrid, roles: ["employee", "admin"] },
+  { href: "/tasks", label: "My tasks", icon: ListChecks, roles: ["employee", "admin"] },
   { href: "/leads", label: "Leads & quotes", icon: Handshake, roles: ["employee", "admin"] },
   { href: "/projects", label: "Projects", icon: FolderKanban, roles: ["employee", "admin"] },
   { href: "/admin", label: "Admin dashboard", icon: LayoutDashboard, roles: ["admin"] },

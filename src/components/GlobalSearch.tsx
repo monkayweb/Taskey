@@ -66,7 +66,7 @@ export function GlobalSearch() {
           group: "Today's blocks",
           label: b.label,
           detail: `${b.start}–${b.end}`,
-          href: "/today",
+          href: "/tasks",
         });
     }
 

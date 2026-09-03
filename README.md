@@ -12,6 +12,12 @@ npm install
 npm run dev      # http://localhost:3000
 ```
 
+**Overview** is the summary: the single most urgent thing, a checklist
+progress strip, the outcomes chart, the week's headline counts, and the rail
+panels. **My tasks** is where work actually gets done: everything needing a
+human as cards, then the day's time blocks as cards grouped into morning and
+afternoon, with the day's schedule alongside.
+
 The sidebar has a **Viewing as** switcher. Start as **Thandi Mokoena** (sales) to
 see the employee side, then switch to **Tristan Storm** (owner) for the admin
 dashboard and audit trail. **Reset demo** on the admin dashboard restores the
@@ -75,7 +81,8 @@ src/
     labels.ts     display labels and tones
   components/     AppShell, DailyChecklist, LeadCard, EscalationQueue, ui.tsx
   app/
-    today/        employee daily dashboard
+    overview/     the summary dashboard
+    tasks/        today's work as cards
     leads/        pipeline with the follow-up engine
     projects/     projects and milestones
     admin/        management dashboard
