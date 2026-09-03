@@ -60,7 +60,7 @@ const WEEKDAYS = [1, 2, 3, 4, 5];
 
 /** Mirrors what each person's Google Calendar looks like on a working day. */
 export const TEMPLATES: TimeBlockTemplate[] = [
-  // Thandi — sales
+  // Thandi, sales
   ["u_thandi", "Emails & WhatsApp triage", "08:00", "09:00", "emails"],
   ["u_thandi", "Outbound sales calls", "09:00", "10:30", "calls"],
   ["u_thandi", "Quote follow-ups", "10:30", "11:00", "quotes"],
@@ -68,7 +68,7 @@ export const TEMPLATES: TimeBlockTemplate[] = [
   ["u_thandi", "Client meetings", "13:30", "15:00", "meetings"],
   ["u_thandi", "Pipeline & CRM update", "15:00", "16:00", "admin"],
   ["u_thandi", "End-of-day wrap", "16:00", "17:00", "admin"],
-  // Devon — delivery
+  // Devon, delivery
   ["u_devon", "Site check-ins", "08:00", "08:30", "projects"],
   ["u_devon", "Project delivery block", "08:30", "10:00", "projects"],
   ["u_devon", "Supplier emails", "10:00", "11:00", "emails"],
@@ -76,7 +76,7 @@ export const TEMPLATES: TimeBlockTemplate[] = [
   ["u_devon", "Project delivery block", "14:00", "15:30", "projects"],
   ["u_devon", "Snag list & QA", "15:30", "16:30", "projects"],
   ["u_devon", "Daily report", "16:30", "17:00", "admin"],
-  // Ayesha — inbound
+  // Ayesha, inbound
   ["u_ayesha", "Inbox & WhatsApp inbound", "08:00", "09:30", "emails"],
   ["u_ayesha", "Invoicing", "09:30", "10:30", "admin"],
   ["u_ayesha", "Inquiry routing calls", "10:30", "12:00", "calls"],
@@ -227,7 +227,7 @@ export function buildSeed(now: Date): Seed {
               ]
             : [],
         summaryNote: filled.some((b) => b.status === "missed")
-          ? "Busy day — flagged what slipped."
+          ? "Busy day, flagged what slipped."
           : undefined,
         submittedAt,
         lockedAt: submittedAt,
@@ -421,7 +421,7 @@ export function buildSeed(now: Date): Seed {
           id: "la_8",
           at: iso(subDays(now, 4)),
           kind: "stage_change",
-          detail: "PO received — moved to won.",
+          detail: "PO received, moved to won.",
           byUserId: "u_devon",
         },
       ],
@@ -459,7 +459,7 @@ export function buildSeed(now: Date): Seed {
         actorId: lead.ownerId,
         type: "lead.quote_sent",
         subject: lead.company,
-        detail: `Quote sent — ${lead.value.toLocaleString("en-ZA")} ZAR`,
+        detail: `Quote sent for ${lead.value.toLocaleString("en-ZA")} ZAR`,
       });
     }
   }
@@ -529,7 +529,7 @@ export function buildSeed(now: Date): Seed {
       severity: "overloaded",
       items: [
         { kind: "block", refId: "tb_18", label: "Quote typing & sending" },
-        { kind: "lead", refId: "ld_1", label: "Kloof Industrial — WhatsApp inquiry" },
+        { kind: "lead", refId: "ld_1", label: "Kloof Industrial · WhatsApp inquiry" },
       ],
       note: "Three quotes to type and the inbound WhatsApp queue is backing up. I can do one or the other today.",
       status: "open",

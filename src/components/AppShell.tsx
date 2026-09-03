@@ -147,7 +147,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </p>
             <p className="truncate text-xs text-accent">
               {me.role === "admin"
-                ? `${prettyDate(now)} — here's where the team stands`
+                ? `${prettyDate(now)}. Here's where the team stands`
                 : "Let's close out your day properly"}
             </p>
           </div>

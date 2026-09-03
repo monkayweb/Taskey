@@ -37,7 +37,7 @@ export default function ProjectsPage() {
         <div>
           <h1 className="text-xl font-semibold tracking-tight">Projects</h1>
           <p className="mt-0.5 text-[13px] text-muted">
-            Milestones tick over here and land in the audit trail — nobody has to
+            Milestones tick over here and land in the audit trail, so nobody has to
             ask for a status update.
           </p>
         </div>

@@ -219,7 +219,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
                   <span className="font-medium text-ink">
                     {a.kind.replace(/_/g, " ")}
                   </span>{" "}
-                  — {a.detail}
+                  · {a.detail}
                 </span>
               </li>
             ))}

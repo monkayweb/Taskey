@@ -26,7 +26,7 @@
   --color-track: #e9e3fd;
 
   /* Status: dark steps for text, validated bright steps for data fills.
-     A status colour never carries meaning alone — always icon or label too. */
+     A status colour never carries meaning alone; always an icon or label too. */
   --color-ok: #0b7a2f;
   --color-ok-fill: #0ca30c;
   --color-ok-soft: #e7f7e7;

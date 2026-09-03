@@ -56,7 +56,7 @@ export function DailyChecklist({ log }: { log: DailyLog }) {
         title="Today's time blocks"
         subtitle={
           log.blocks.length > 0
-            ? `Mirrored from ${"Google Calendar · Team"} — tick each block off at the end of your shift`
+            ? `Mirrored from ${"Google Calendar · Team"}. Tick each block off at the end of your shift`
             : undefined
         }
         action={
@@ -129,7 +129,7 @@ export function DailyChecklist({ log }: { log: DailyLog }) {
                             {block.skipReason && (
                               <p className="text-xs text-muted">
                                 {SKIP_LABEL[block.skipReason]}
-                                {block.note ? ` — ${block.note}` : ""}
+                                {block.note ? `: ${block.note}` : ""}
                               </p>
                             )}
                           </div>
@@ -304,7 +304,7 @@ function ExtraTasks({
   return (
     <Panel
       title="Work that wasn't on the calendar"
-      subtitle="Log the interruptions too — otherwise the day looks emptier than it was."
+      subtitle="Log the interruptions too, otherwise the day looks emptier than it was."
       bodyClassName=""
     >
       {log.extraTasks.length > 0 && (

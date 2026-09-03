@@ -9,7 +9,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Taskey — daily accountability for small teams",
+  title: "Taskey: daily accountability for small teams",
   description:
     "Calendar-synced daily checklists, automated quote follow-ups, workload escalation and KPI reporting.",
 };

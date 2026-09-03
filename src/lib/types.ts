@@ -137,11 +137,11 @@ export interface Lead {
   stage: LeadStage;
   /** Quote value in ZAR. */
   value: number;
-  /** When the inquiry landed — drives the idle-inquiry safeguard. */
+  /** When the inquiry landed. Drives the idle-inquiry safeguard. */
   createdAt: string;
   /** First outbound touch. Absent means nobody has replied yet. */
   firstResponseAt?: string;
-  /** When the quote went out — starts the 3-day follow-up clock. */
+  /** When the quote went out. Starts the 3-day follow-up clock. */
   quoteSentAt?: string;
   lastActivityAt: string;
   activity: LeadActivity[];
@@ -210,8 +210,8 @@ export type AuditType =
   | "escalation.resolved";
 
 /**
- * Append-only. The store exposes no action that edits or removes an entry —
- * this is the record performance reviews are held against.
+ * Append-only. The store exposes no action that edits or removes an entry.
+ * This is the record performance reviews are held against.
  */
 export interface AuditEvent {
   id: string;
@@ -237,7 +237,7 @@ export interface Flag {
   severity: "critical" | "warning" | "info";
   title: string;
   detail: string;
-  /** Sort key — higher floats to the top of the priority list. */
+  /** Sort key. Higher floats to the top of the priority list. */
   priority: number;
   href: string;
   refId: string;

@@ -124,7 +124,7 @@ export default function AuditPage() {
           <h1 className="text-xl font-semibold tracking-tight">Audit trail</h1>
           <p className="mt-0.5 text-[13px] text-muted">
             Append-only record of completed versus missed work. Nothing here can be
-            edited or deleted — that&rsquo;s the point.
+            edited or deleted, which is the point.
           </p>
         </div>
         <button type="button" onClick={exportCsv} className="btn btn-ghost btn-md">

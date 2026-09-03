@@ -10,8 +10,8 @@ import { scoreTone } from "@/lib/kpi";
 import { Avatar, Badge, Panel } from "./ui";
 
 /**
- * Who else is on today. Scores are management-only — surfacing a colleague's
- * KPI to their peers isn't the job this panel is doing.
+ * Who else is on today. Scores are management-only, because surfacing a
+ * colleague's KPI to their peers isn't the job this panel is doing.
  */
 export function TeamList({ showScores }: { showScores: boolean }) {
   const now = useNow();

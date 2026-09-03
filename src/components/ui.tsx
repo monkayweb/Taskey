@@ -21,7 +21,7 @@ const TONE_TEXT: Record<Tone, string> = {
   danger: "text-danger",
 };
 
-/** Validated data-fill steps — brighter than the text tokens of the same name. */
+/** Validated data-fill steps, brighter than the text tokens of the same name. */
 const TONE_FILL: Record<Tone, string> = {
   neutral: "bg-track",
   accent: "bg-accent",

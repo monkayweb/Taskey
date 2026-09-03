@@ -36,7 +36,7 @@ export const STATUS_TONE: Record<BlockStatus, Tone> = {
 export const SKIP_LABEL: Record<SkipReason, string> = {
   ran_out_of_time: "Ran out of time",
   reprioritised: "Reprioritised to something urgent",
-  blocked_externally: "Blocked — waiting on someone else",
+  blocked_externally: "Blocked, waiting on someone else",
   client_delay: "Client delayed or cancelled",
   meeting_overran: "A meeting overran",
   leave: "On leave / sick",

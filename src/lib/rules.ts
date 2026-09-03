@@ -25,7 +25,7 @@ export const money = (n: number) => ZAR.format(n);
 export const isOpen = (lead: Lead) =>
   lead.stage !== "won" && lead.stage !== "lost";
 
-/** Quote is out and awaiting a decision — the 3-day clock is running. */
+/** Quote is out and awaiting a decision, so the 3-day clock is running. */
 export const isAwaitingFollowUp = (lead: Lead) =>
   !!lead.quoteSentAt && (lead.stage === "quoted" || lead.stage === "negotiating");
 
@@ -62,7 +62,7 @@ export function leadFlags(lead: Lead, now: Date): Flag[] {
         kind: "followup_overdue",
         severity: "critical",
         title: `Follow up ${lead.company}`,
-        detail: `Quote ${money(lead.value)} — silent ${daysSince(lead.lastActivityAt, now)} days`,
+        detail: `Quote ${money(lead.value)} · silent ${daysSince(lead.lastActivityAt, now)} days`,
         priority: 900 + Math.abs(slack) * 10,
         href: "/leads",
         refId: lead.id,
@@ -73,7 +73,7 @@ export function leadFlags(lead: Lead, now: Date): Flag[] {
         kind: "followup_due_today",
         severity: "warning",
         title: `Follow up ${lead.company} today`,
-        detail: `Quote ${money(lead.value)} — day ${FOLLOW_UP_DAYS} of the follow-up window`,
+        detail: `Quote ${money(lead.value)} · day ${FOLLOW_UP_DAYS} of the follow-up window`,
         priority: 700,
         href: "/leads",
         refId: lead.id,
@@ -97,7 +97,7 @@ export function projectFlags(project: Project, now: Date): Flag[] {
         kind: "milestone_overdue",
         severity: "critical",
         title: `${m.label} is overdue`,
-        detail: `${project.name} — due ${relativeDays(m.dueDate, now)}`,
+        detail: `${project.name} · due ${relativeDays(m.dueDate, now)}`,
         priority: 800 + Math.abs(left) * 5,
         href: "/projects",
         refId: m.id,
@@ -112,7 +112,7 @@ export function projectFlags(project: Project, now: Date): Flag[] {
       kind: "project_due_soon",
       severity: left <= 2 ? "warning" : "info",
       title: `${project.name} delivers ${relativeDays(project.dueDate, now)}`,
-      detail: `${project.client} — ${project.milestones.filter((m) => !m.done).length} milestones open`,
+      detail: `${project.client} · ${project.milestones.filter((m) => !m.done).length} milestones open`,
       priority: 400 - left,
       href: "/projects",
       refId: project.id,

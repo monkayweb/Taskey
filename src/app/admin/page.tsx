@@ -35,7 +35,7 @@ export default function AdminPage() {
   const me = users.find((u) => u.id === currentUserId)!;
   const flags = useFlags();
   const kpis = useWeekKpis();
-  // Read before the admin guard below — hooks can't sit after an early return.
+  // Read before the admin guard below, because hooks can't sit after an early return.
   const openPipeline = useTaskey((st) =>
     st.leads
       .filter((l) => l.stage !== "won" && l.stage !== "lost")
@@ -201,7 +201,7 @@ export default function AdminPage() {
                             </span>
                             <span className="font-medium">{b.label}</span>
                             <span className="text-muted">
-                              — {b.skipReason ? SKIP_LABEL[b.skipReason] : "no reason given"}
+                              · {b.skipReason ? SKIP_LABEL[b.skipReason] : "no reason given"}
                               {b.note ? `: ${b.note}` : ""}
                             </span>
                           </li>
@@ -219,7 +219,7 @@ export default function AdminPage() {
       {/* --- KPI table ---------------------------------------------------- */}
       <Panel
         title="Weekly KPI report"
-        subtitle="Fed automatically by the daily submissions — nobody fills this in."
+        subtitle="Fed automatically by the daily submissions, so nobody fills this in."
         bodyClassName=""
       >
         <div className="scroll-x">
@@ -272,7 +272,7 @@ export default function AdminPage() {
                   </td>
                   <td className="num px-3 py-2.5">
                     {k.avgFirstResponseHours === null
-                      ? "—"
+                      ? "n/a"
                       : `${k.avgFirstResponseHours.toFixed(1)}h`}
                   </td>
                   <td className="num px-3 py-2.5">{k.milestonesClosed}</td>

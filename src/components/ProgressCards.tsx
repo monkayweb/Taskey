@@ -10,7 +10,7 @@ import { AvatarStack, Badge, pctText } from "./ui";
 
 /**
  * The 3-up project row. Progress is milestone completion, and the pill on the
- * right is the honest deadline signal — red once it's behind.
+ * right is the honest deadline signal, red once it's behind.
  */
 export function ProgressCards({ projects }: { projects: Project[] }) {
   const now = useNow();

@@ -196,8 +196,8 @@ export const useTaskey = create<TaskeyState>()(
           `Daily log · ${log.date}`,
           `${done}/${log.blocks.length} blocks completed, ${missed} missed`,
         );
-        // Each missed block is recorded individually — the aggregate alone
-        // isn't enough to answer "what exactly slipped, and why".
+        // Each missed block is recorded individually, because the aggregate
+        // alone isn't enough to answer "what exactly slipped, and why".
         for (const b of log.blocks.filter((x) => x.status !== "done")) {
           audit = record(
             audit,
@@ -307,7 +307,7 @@ export const useTaskey = create<TaskeyState>()(
             actor,
             "lead.responded",
             lead.company,
-            `First response logged — ${detail}`,
+            `First response logged: ${detail}`,
           ),
         }));
       },
@@ -340,7 +340,7 @@ export const useTaskey = create<TaskeyState>()(
             actor,
             "lead.quote_sent",
             lead.company,
-            `Quote sent — ${value.toLocaleString("en-ZA")} ZAR. Follow-up clock started.`,
+            `Quote sent for ${value.toLocaleString("en-ZA")} ZAR. Follow-up clock started.`,
           ),
         }));
       },

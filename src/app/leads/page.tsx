@@ -188,7 +188,7 @@ export default function LeadsPage() {
 
 const CHANNELS = Object.keys(CHANNEL_LABEL) as LeadChannel[];
 
-/** Intake form — starts the idle-inquiry clock the moment something lands. */
+/** Intake form. Starts the idle-inquiry clock the moment something lands. */
 function NewInquiry() {
   const { addLead, users, currentUserId } = useTaskey();
   const [open, setOpen] = useState(false);

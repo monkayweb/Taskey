@@ -35,7 +35,7 @@ const toMinutes = (hhmm: string) => {
 
 /**
  * The calendar view of the day, mirroring the source calendar's shape rather
- * than flattening it to a list. Read-only on purpose — the checklist below
+ * than flattening it to a list. Read-only on purpose: the checklist below
  * owns the controls; this is the at-a-glance version, and it doubles as the
  * way to look back at an earlier day.
  */

@@ -16,7 +16,7 @@ export function DailyActions({ flags }: { flags: Flag[] }) {
   return (
     <Panel
       title="Required today"
-      subtitle="Generated from your quotes, inquiries and project deadlines — no one has to compile this."
+      subtitle="Generated from your quotes, inquiries and project deadlines, so no one has to compile this."
       action={
         <Badge tone={critical ? "danger" : flags.length ? "warn" : "ok"}>
           <Bell size={11} />

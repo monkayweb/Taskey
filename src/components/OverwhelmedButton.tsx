@@ -22,7 +22,7 @@ const SEVERITIES: {
 
 /**
  * One click to say "I'm swamped", then a forced pick of *which* items are
- * falling behind — a bare alert with no specifics can't be acted on.
+ * falling behind, because a bare alert with no specifics can't be acted on.
  */
 export function OverwhelmedButton({ compact }: { compact?: boolean }) {
   const [open, setOpen] = useState(false);
@@ -55,7 +55,7 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
       .map((l) => ({
         kind: "lead",
         refId: l.id,
-        label: `${l.company} — ${l.stage.replace("_", " ")}`,
+        label: `${l.company} · ${l.stage.replace("_", " ")}`,
       }));
 
     const milestoneItems: EscalationItem[] = projects
@@ -104,7 +104,7 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
       {myOpen && !compact && (
         <p className="mt-1.5 text-[11px] leading-snug text-muted">
           Management was notified{" "}
-          {myOpen.status === "acknowledged" ? "and has seen it" : "— awaiting response"}.
+          {myOpen.status === "acknowledged" ? "and has seen it" : "and has not responded yet"}.
         </p>
       )}
 
@@ -173,7 +173,7 @@ export function OverwhelmedButton({ compact }: { compact?: boolean }) {
 
                 {candidates.length === 0 ? (
                   <p className="rounded-xl bg-sunken px-3 py-4 text-center text-xs text-muted">
-                    Nothing open to flag — your list is clear.
+                    Nothing open to flag. Your list is clear.
                   </p>
                 ) : (
                   <div className="space-y-3">

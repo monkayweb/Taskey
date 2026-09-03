@@ -26,8 +26,8 @@ interface DayBar {
 
 /**
  * Blocks completed per working day. One measure, so one hue: violet columns
- * against a same-ramp track showing what was scheduled. No legend — the title
- * names the series.
+ * against a same-ramp track showing what was scheduled. No legend, because the
+ * title names the series.
  */
 export function WeeklyProgress({ scope }: { scope: "me" | "team" }) {
   const now = useNow();
@@ -113,7 +113,7 @@ export function WeeklyProgress({ scope }: { scope: "me" | "team" }) {
 
   const { bars, axisMax, ticks } = stats;
 
-  // Label the best day only — never a number on every bar.
+  // Label the best day only, never a number on every bar.
   const bestIndex = bars.reduce(
     (best, b, i) => (b.credited > bars[best].credited ? i : best),
     0,
@@ -162,7 +162,7 @@ export function WeeklyProgress({ scope }: { scope: "me" | "team" }) {
                     key={bar.date}
                     className="group relative flex h-full flex-1 flex-col justify-end px-1"
                   >
-                    {/* capacity track — the data end is flat to the baseline */}
+                    {/* capacity track. The data end is flat to the baseline */}
                     <div
                       className="relative mx-auto w-full max-w-[34px] overflow-hidden rounded-t-md bg-track transition-colors group-hover:bg-accent-soft"
                       style={{ height: `${Math.max(trackH, 2)}%` }}

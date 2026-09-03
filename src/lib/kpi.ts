@@ -2,7 +2,7 @@
 // Weekly KPI rollup.
 //
 // Derived entirely from the daily submissions and the lead/project record, so
-// nobody on the team fills in a report — ticking the checklist *is* the report.
+// nobody on the team fills in a report: ticking the checklist *is* the report.
 // ---------------------------------------------------------------------------
 
 import type {
@@ -93,7 +93,7 @@ export function kpiForUser(
     .filter((m) => m.done && inWeek(m.doneAt)).length;
 
   const submissionRate = pct(submitted.length, logsExpected);
-  // Partial credit for partial blocks — a half-done block isn't a zero.
+  // Partial credit for partial blocks, because a half-done block isn't a zero.
   const completionRate = pct(blocksDone + blocksPartial * 0.5, blocks.length);
   const responsiveness = pct(
     followUpsOnTime,

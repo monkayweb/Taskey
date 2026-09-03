@@ -54,7 +54,7 @@ export default function TodayPage() {
             isEmployee
               ? submitted
                 ? "Your day is submitted and locked. Anything still flagged below is waiting on you."
-                : "Tick off your time blocks before you clock out — everything else on this page is generated for you."
+                : "Tick off your time blocks before you clock out. Everything else on this page is generated for you."
               : "You have no calendar blocks of your own. Switch to a team member in the sidebar to see their checklist."
           }
           ctaLabel={isEmployee ? (submitted ? "Review my day" : "Go to submission") : "Open admin dashboard"}
@@ -72,7 +72,7 @@ export default function TodayPage() {
             <p className="mt-1 text-xs text-warn/90">
               {myEscalation.items.length} item
               {myEscalation.items.length === 1 ? "" : "s"} flagged
-              {myEscalation.note ? ` — “${myEscalation.note}”` : ""}
+              {myEscalation.note ? `: “${myEscalation.note}”` : ""}
             </p>
           </div>
         )}
