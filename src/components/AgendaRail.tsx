@@ -65,7 +65,7 @@ export function AgendaRail({ me }: { me: User }) {
     nowOffset !== null && nowOffset >= 0 && nowOffset <= (endHour - startHour) * HOUR_PX;
 
   return (
-    <div className="card overflow-hidden bg-accent-wash">
+    <div className="card overflow-hidden bg-rail">
       {/* --- who ------------------------------------------------------ */}
       <div className="flex items-center gap-2.5 px-4 pt-4">
         <Avatar name={me.name} tint={me.tint} size={38} />
@@ -103,7 +103,7 @@ export function AgendaRail({ me }: { me: User }) {
                   "flex flex-1 flex-col items-center gap-0.5 rounded-xl py-2 transition-colors",
                   active
                     ? "bg-accent text-white shadow-sm"
-                    : "text-muted hover:bg-surface",
+                    : "bg-surface/60 text-muted hover:bg-surface",
                 )}
               >
                 <span className="font-mono text-[15px] font-medium tabular-nums leading-none">
@@ -138,7 +138,7 @@ export function AgendaRail({ me }: { me: User }) {
       </div>
 
       {/* --- timeline ------------------------------------------------- */}
-      <div className="mt-3 rounded-t-2xl bg-surface px-4 pb-4 pt-3">
+      <div className="m-3 mt-4 rounded-2xl bg-surface px-4 pb-4 pt-3">
         {blocks.length === 0 ? (
           <p className="py-8 text-center text-xs text-muted">
             Nothing scheduled on this day.

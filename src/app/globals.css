@@ -24,6 +24,8 @@
 
   /* Same violet ramp, used as the unfilled track behind a data mark. */
   --color-track: #e9e3fd;
+  /* Tinted container for the right rail, so its white cards read as cards. */
+  --color-rail: #eae4fd;
 
   /* Status: dark steps for text, validated bright steps for data fills.
      A status colour never carries meaning alone; always an icon or label too. */
