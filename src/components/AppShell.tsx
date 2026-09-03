@@ -55,7 +55,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh">
       {/* --- sidebar --------------------------------------------------- */}
-      <aside className="hidden w-[228px] shrink-0 flex-col bg-surface md:flex">
+      <aside
+        className="hidden w-[228px] shrink-0 flex-col border-r border-line bg-surface md:flex"
+        style={{ boxShadow: "var(--shadow-rail)" }}
+      >
         <div className="flex h-16 items-center gap-2 px-5">
           <span className="grid size-8 place-items-center rounded-xl bg-accent text-white">
             <SquareCheckBig size={17} strokeWidth={2.4} />
@@ -140,7 +143,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* --- main ------------------------------------------------------ */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between gap-4 px-4 md:px-8">
+        <header className="flex h-16 items-center justify-between gap-4 border-b border-line px-4 md:px-8">
           <div className="min-w-0">
             <p className="truncate text-[17px] font-semibold tracking-tight">
               Hi, {firstName(me.name)}

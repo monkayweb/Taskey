@@ -35,7 +35,6 @@ export function TeamList({ showScores }: { showScores: boolean }) {
         ) : undefined
       }
       bodyClassName="px-3 pb-3"
-      className="bg-rail"
     >
       <ul className="space-y-1">
         {team.map((u) => {
@@ -46,7 +45,7 @@ export function TeamList({ showScores }: { showScores: boolean }) {
           return (
             <li
               key={u.id}
-              className="flex items-center gap-2.5 rounded-xl bg-surface px-2.5 py-2 transition-shadow hover:shadow-[var(--shadow-card)]"
+              className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition-colors hover:bg-sunken"
             >
               <Avatar name={u.name} tint={u.tint} size={32} />
               <div className="min-w-0 flex-1">
