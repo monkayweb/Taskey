@@ -146,20 +146,18 @@ export default function AccountPage() {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="taskey-clerk space-y-4">
             <p className="flex max-w-[46rem] items-start gap-2 text-[12px] leading-relaxed text-muted">
               <KeyRound size={13} className="mt-0.5 shrink-0 text-faint" />
               Taskey has no password of its own: signing in emails you a code,
               or uses Google. Add a passkey below and you will need neither.
               Whatever else the practice has enabled appears here by itself.
             </p>
-            {/* Clerk's panel, given the room it expects. Deliberately
-                unstyled beyond its width: fighting its internal layout is
-                what cropped it before. */}
-            <UserProfile
-              routing="hash"
-              appearance={{ elements: { rootBox: "w-full" } }}
-            />
+            {/* Clerk's panel, given the room it expects. It keeps its own
+                layout, a nav rail and pages, and wears the app's surfaces
+                through lib/clerk-appearance.ts: fighting its internal layout
+                is what cropped it before. */}
+            <UserProfile routing="hash" />
           </div>
         )}
       </div>

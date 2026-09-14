@@ -8,7 +8,7 @@ import { SquareCheckBig } from "lucide-react";
  */
 export default function SignInPage() {
   return (
-    <div className="auth-page grid min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)]">
+    <div className="auth-page taskey-clerk grid min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)]">
       {/* --- what it is ------------------------------------------------ */}
       <section className="relative hidden flex-col justify-between overflow-hidden bg-accent px-12 py-14 lg:flex">
         {/* One quiet shape, so the panel is not a flat block of indigo. */}
@@ -85,7 +85,7 @@ export default function SignInPage() {
           {/* Clerk's own heading is hidden in globals.css, so the words here
               are ours and there is no gap where its title used to be. */}
           <div className="mt-6">
-            <SignIn appearance={{ elements: { rootBox: "w-full" } }} />
+            <SignIn />
           </div>
 
           <p className="mt-8 border-t border-line pt-5 text-[12px] leading-relaxed text-faint">

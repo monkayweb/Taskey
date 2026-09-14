@@ -1,3 +1,10 @@
+/*
+ * Clerk's own styles go in this layer, named in lib/clerk-appearance.ts. It is
+ * declared first, so it sits below everything Tailwind emits and a plain
+ * utility class on a Clerk element wins without an !important anywhere.
+ */
+@layer clerk;
+
 @import "tailwindcss";
 
 /* --------------------------------------------------------------------------
@@ -148,25 +155,71 @@ body {
 
 /* --------------------------------------------------------------------------
    Clerk's own components, on the sign-in page only.
-   
+
    Scoped to .auth-page on purpose: these rules used to be global, which meant
    they also cropped the account panel, a different Clerk component that needs
    its header and its own layout. The sign-in page carries its own heading, so
    only there is Clerk's dropped.
+
+   Everything else Clerk wears is set in lib/clerk-appearance.ts. This is only
+   what cannot be said there: hiding a whole element, and the development-mode
+   banner, which is a fixed strip Clerk owns rather than a card element.
    -------------------------------------------------------------------------- */
 
+/*
+ * Backgrounds and box padding are the two things Clerk sets from outside the
+ * layer above, so they are the two things said here in plain CSS. Everything
+ * else it wears comes from the appearance object.
+ */
 .auth-page .cl-header {
   display: none;
 }
 
-.auth-page .cl-cardBox {
-  width: 100%;
-  border-radius: 1rem;
-  box-shadow: var(--shadow-card);
+/* The sign-in form is already inside a white column: Clerk's own card would
+   be a card inside a card, and its padding is what pushed the form out of
+   line with the heading above it. */
+.auth-page .cl-cardBox,
+.auth-page .cl-card,
+.auth-page .cl-footer {
+  background: transparent;
+  box-shadow: none;
 }
 
 .auth-page .cl-card {
-  padding-top: 1.5rem;
+  padding: 0;
+}
+
+/* Both components: the app's own fills, which Clerk's rules would otherwise
+   flatten to white. */
+.taskey-clerk .cl-socialButtonsBlockButton {
+  background: var(--color-sunken);
+}
+
+.taskey-clerk .cl-socialButtonsBlockButton:hover {
+  background: var(--color-accent-soft);
+}
+
+.taskey-clerk .cl-formFieldInput {
+  background: var(--color-sunken);
+}
+
+.taskey-clerk .cl-formFieldInput:focus,
+.taskey-clerk .cl-formFieldInput:focus-visible {
+  background: var(--color-surface);
+}
+
+/* Clerk draws the rule either side of "or" as a flex child with no height of
+   its own, so giving it the app's line colour is not enough to see it. */
+.taskey-clerk .cl-dividerLine {
+  height: 1px;
+  flex: 1 1 auto;
+  background: var(--color-line);
+}
+
+/* The account panel stands on the tinted ground, so it keeps a surface and
+   takes the app's card: a ring rather than a shadow. */
+.taskey-clerk:not(.auth-page) .cl-cardBox {
+  box-shadow: inset 0 0 0 1px var(--color-line);
 }
 
 /* --------------------------------------------------------------------------
