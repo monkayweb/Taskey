@@ -234,13 +234,13 @@ export function RecurringDuties({
               <span className="min-w-0 flex-1">
                 <span
                   className={clsx(
-                    "block truncate text-[13px] font-medium",
+                    "block break-words text-[13px] font-medium sm:truncate",
                     !r.active && "text-muted line-through",
                   )}
                 >
                   {r.title}
                 </span>
-                <span className="block truncate text-[11px] text-faint">
+                <span className="block text-[11px] text-faint sm:truncate">
                   {r.weekdays.length === 5 &&
                   r.weekdays.every((d) => d <= 5)
                     ? "Every working day"

@@ -88,7 +88,9 @@ export default function LeadsPage() {
   }, [scoped, filter, now]);
 
   return (
-    <div className="space-y-4">
+    // The same page frame as every other screen: this one was written before
+    // the shell had one, and was running edge to edge on a phone.
+    <div className="min-w-0 space-y-6 p-5 md:p-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">
@@ -103,7 +105,7 @@ export default function LeadsPage() {
         <NewInquiry />
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatTile
           label="Unanswered inquiries"
           value={stats.unanswered.length}
@@ -145,7 +147,7 @@ export default function LeadsPage() {
         }
         bodyClassName=""
       >
-        <div className="flex gap-1 overflow-x-auto border-b border-line px-4 pb-3">
+        <div className="tab-strip flex gap-1 border-b border-line px-4 pb-3">
           {FILTERS.map((f) => (
             <button
               key={f.value}

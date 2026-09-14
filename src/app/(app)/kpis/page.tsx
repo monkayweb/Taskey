@@ -127,7 +127,7 @@ export default function KpiPage() {
       ) : (
         <>
           {/* --- the four headline measures ------------------------- */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             <StatTile
               label="Tasks closed on time"
               value={
@@ -349,7 +349,11 @@ export default function KpiPage() {
 
               <dl className="grid grid-cols-2 gap-4">
                 <div>
-                  <dt className="eyebrow">Owed on submitted work</dt>
+                  {/* Held at two lines so the figure beside it keeps the
+                      same baseline when this label wraps on a phone. */}
+                  <dt className="eyebrow min-h-[26px] leading-tight sm:min-h-0">
+                    Owed on submitted work
+                  </dt>
                   <dd
                     className={clsx(
                       "mt-1 text-[20px] font-medium tabular-nums",
@@ -360,7 +364,9 @@ export default function KpiPage() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="eyebrow">Clients chased</dt>
+                  <dt className="eyebrow min-h-[26px] leading-tight sm:min-h-0">
+                    Clients chased
+                  </dt>
                   <dd className="mt-1 text-[20px] font-medium tabular-nums">
                     {kept.chases}
                   </dd>

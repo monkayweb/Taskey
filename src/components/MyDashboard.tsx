@@ -87,7 +87,7 @@ export function MyDashboard({ me }: { me: User }) {
       </div>
 
       {/* --- your day, in four numbers -------------------------------- */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatTile
           label="Due today"
           value={record.dueToday}
@@ -222,13 +222,13 @@ export function MyDashboard({ me }: { me: User }) {
                         <FolderKanban size={15} />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="flex items-center gap-2">
-                          <span className="min-w-0 truncate text-[13px] font-semibold">
+                        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <span className="min-w-0 max-w-full truncate text-[13px] font-semibold">
                             {p.client}
                           </span>
                           <Badge>{serviceById(p.serviceId).short}</Badge>
                         </span>
-                        <span className="mt-0.5 block truncate text-[11px] text-muted">
+                        <span className="mt-0.5 block text-[11px] text-muted sm:truncate">
                           {waitingOn(p, now)}
                           {balance > 0 ? ` · ${money(balance)} due` : ""}
                         </span>
@@ -268,13 +268,13 @@ export function MyDashboard({ me }: { me: User }) {
 
           <dl className="mt-4 grid grid-cols-3 gap-3 border-t border-line pt-4">
             <div>
-              <dt className="eyebrow">Closed all told</dt>
+              <dt className="eyebrow min-h-[26px] leading-tight sm:min-h-0">Closed all told</dt>
               <dd className="mt-1 text-[18px] font-medium tabular-nums">
                 {record.closed}
               </dd>
             </div>
             <div>
-              <dt className="eyebrow">Closed late</dt>
+              <dt className="eyebrow min-h-[26px] leading-tight sm:min-h-0">Closed late</dt>
               <dd
                 className={clsx(
                   "mt-1 text-[18px] font-medium tabular-nums",
@@ -285,7 +285,7 @@ export function MyDashboard({ me }: { me: User }) {
               </dd>
             </div>
             <div>
-              <dt className="eyebrow">When late, by</dt>
+              <dt className="eyebrow min-h-[26px] leading-tight sm:min-h-0">When late, by</dt>
               <dd className="mt-1 text-[18px] font-medium tabular-nums">
                 {record.avgDaysLate === null
                   ? "—"
@@ -318,16 +318,16 @@ function TaskRow({
   return (
     <Link
       href={`/tasks?task=${a.id}`}
-      className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-sunken/60"
+      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-sunken/60 sm:px-5"
     >
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-2">
-          <span className="min-w-0 truncate text-[13px] font-semibold">
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="min-w-0 max-w-full truncate text-[13px] font-semibold">
             {a.title}
           </span>
           {a.priority === "urgent" && <Badge tone="danger">Urgent</Badge>}
         </span>
-        <span className="mt-0.5 block truncate text-[11px] text-muted">
+        <span className="mt-0.5 block text-[11px] text-muted sm:truncate">
           {project ? `${project.client} · ` : ""}
           {CATEGORY_LABEL[a.category]}
           {a.dueTime ? ` · ${a.dueTime}` : ""}

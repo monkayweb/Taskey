@@ -55,7 +55,7 @@ export default function AccountPage() {
         {/* --- who you are, and the way out --------------------------- */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
           <Avatar name={me.name} tint={me.tint} size={52} />
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 basis-[min(100%,14rem)]">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-[20px] font-bold tracking-tight">
                 {me.name}
@@ -68,7 +68,10 @@ export default function AccountPage() {
             </p>
           </div>
           <SignOutButton>
-            <button type="button" className="btn btn-ghost btn-sm shrink-0">
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm w-full shrink-0 sm:w-auto"
+            >
               <LogOut size={13} />
               Sign out
             </button>
@@ -301,7 +304,7 @@ function Row({
   tone?: "quiet" | "warn";
 }) {
   return (
-    <li className="flex flex-wrap items-start gap-x-3 gap-y-2 px-5 py-3.5">
+    <li className="flex flex-wrap items-start gap-x-3 gap-y-2 px-4 py-3.5 sm:px-5">
       <span
         className={clsx(
           "grid size-8 shrink-0 place-items-center rounded-xl",
@@ -312,7 +315,7 @@ function Row({
       >
         {icon}
       </span>
-      <span className="min-w-0 flex-1">
+      <span className="min-w-0 flex-1 basis-[min(100%,16rem)]">
         <span className="block text-[13px] font-semibold">{title}</span>
         <span className="mt-0.5 block text-[12px] leading-relaxed text-muted">
           {detail}

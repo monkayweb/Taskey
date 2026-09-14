@@ -138,7 +138,12 @@ export function StatTile({
 }) {
   return (
     <div
-      className={clsx("px-5 py-4", filled ? "rounded-2xl bg-accent" : "card")}
+      className={clsx(
+        // Two of these sit side by side on a phone, so the padding and the
+        // number both step down rather than the label wrapping to three lines.
+        "px-4 py-3.5 sm:px-5 sm:py-4",
+        filled ? "rounded-2xl bg-accent" : "card",
+      )}
     >
       <div className="flex items-start justify-between gap-2">
         <p className={clsx("eyebrow", filled && "text-white/70")}>{label}</p>
@@ -157,10 +162,10 @@ export function StatTile({
           </span>
         )}
       </div>
-      <div className="mt-2 flex items-end gap-2.5">
+      <div className="mt-2 flex flex-wrap items-end gap-x-2.5 gap-y-1">
         <p
           className={clsx(
-            "text-[28px] tabular-nums leading-none tracking-tight",
+            "text-[22px] tabular-nums leading-none tracking-tight sm:text-[28px]",
             filled ? "font-semibold text-white" : TONE_TEXT[tone],
           )}
         >

@@ -193,8 +193,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* --- main ------------------------------------------------------ */}
       <div className="flex min-h-dvh min-w-0 flex-col bg-content md:pl-[236px]">
-        {/* Mobile nav, since the rail is hidden below md. */}
-        <nav className="flex gap-1 overflow-x-auto border-b border-line px-3 py-2 md:hidden">
+        {/* Mobile nav, since the rail is hidden below md. The account sits
+            at the end of it: on a phone the rail is the only way to your own
+            account and the way out, and the rail is not there. */}
+        <nav className="tab-strip flex items-center gap-1 border-b border-line px-3 py-2 md:hidden">
           {visibleNav.map((item) => (
             <Link
               key={item.href}
@@ -209,6 +211,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {item.label}
             </Link>
           ))}
+
+          <Link
+            href="/account"
+            aria-label={`Your account, ${me.name}`}
+            className={clsx(
+              "ml-1 flex shrink-0 items-center gap-1.5 rounded-full py-1 pl-1 pr-2.5 text-[13px] font-medium",
+              pathname === "/account"
+                ? "bg-accent text-white"
+                : "bg-surface text-muted ring-1 ring-line",
+            )}
+          >
+            <Avatar name={me.name} tint={me.tint} size={22} />
+            You
+          </Link>
         </nav>
 
         <BusyBar />

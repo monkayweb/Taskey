@@ -133,7 +133,10 @@ export function RecentTasks({
       </div>
 
       {/* --- tabs and search ------------------------------------------ */}
-      <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-2 border-b border-line">
+      <div className="mt-6 space-y-2 sm:flex sm:items-center sm:gap-x-8 sm:space-y-0 sm:border-b sm:border-line">
+        {/* The tabs scroll sideways on a phone and the search drops below
+            them, rather than the two fighting over one line. */}
+        <div className="tab-strip flex gap-x-6 border-b border-line sm:gap-x-8 sm:border-0">
         {TABS.map((t) => {
           const on = t.key === tab;
           return (
@@ -143,7 +146,7 @@ export function RecentTasks({
               onClick={() => setTab(t.key)}
               aria-current={on ? "true" : undefined}
               className={clsx(
-                "-mb-px border-b-[2.5px] pb-3 text-[13px] transition-colors",
+                "-mb-px whitespace-nowrap border-b-[2.5px] pb-3 text-[13px] transition-colors",
                 on
                   ? "border-accent font-bold text-accent"
                   : "border-transparent text-faint hover:text-ink",
@@ -153,12 +156,13 @@ export function RecentTasks({
             </button>
           );
         })}
+        </div>
 
         <SearchField
           value={query}
           onChange={setQuery}
           label="Search tasks"
-          className="ml-auto mb-2 w-44"
+          className="w-full sm:mb-2 sm:ml-auto sm:w-44"
         />
       </div>
 
@@ -190,7 +194,7 @@ export function RecentTasks({
                         }
                         aria-expanded={openId === a.id}
                         className={clsx(
-                          "flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left ring-1 transition-colors",
+                          "flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left ring-1 transition-colors sm:gap-4 sm:px-4",
                           // Urgency is carried by the fill, so it only applies
                           // while the task is still open. Everything else is
                           // white, against the tinted ground of the page.
@@ -205,7 +209,7 @@ export function RecentTasks({
                           <div className="flex items-center gap-2">
                             <p
                               className={clsx(
-                                "min-w-0 truncate text-[14px] font-bold",
+                                "min-w-0 text-[14px] font-bold break-words line-clamp-2 sm:truncate",
                                 a.status === "done" &&
                                   "text-muted line-through",
                               )}

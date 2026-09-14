@@ -31,8 +31,9 @@ export function MessageBar() {
   if (!message) return null;
 
   return (
+    // The bottom inset keeps it clear of the home indicator on a phone.
     <div
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center p-4 md:justify-end md:p-6"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:justify-end md:p-6"
       aria-live="polite"
     >
       {/* Keyed by the message, so a new one replays the movement. */}

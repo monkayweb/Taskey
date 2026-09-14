@@ -53,7 +53,7 @@ export function EmployeeKpis({
   return (
     <div className="space-y-6">
       {/* --- the numbers, on top ------------------------------------- */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Tile
           label="Closed on time"
           value={

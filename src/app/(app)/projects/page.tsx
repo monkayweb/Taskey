@@ -138,7 +138,7 @@ export default function ProjectsPage() {
           )}
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <StatTile label="Open sheets" value={live.length} filled />
           <StatTile
             label="Waiting on clients"
@@ -161,7 +161,10 @@ export default function ProjectsPage() {
         </div>
 
         <section>
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-2 border-b border-line">
+          <div className="space-y-2 sm:flex sm:items-center sm:gap-x-8 sm:space-y-0 sm:border-b sm:border-line">
+            {/* The tabs scroll sideways on a phone and the search drops below
+                them, rather than the two fighting over one line. */}
+            <div className="tab-strip flex gap-x-6 border-b border-line sm:gap-x-8 sm:border-0">
             {TABS.map((t) => {
               const on = t.key === tab;
               return (
@@ -171,7 +174,7 @@ export default function ProjectsPage() {
                   onClick={() => setTab(t.key)}
                   aria-current={on ? "true" : undefined}
                   className={clsx(
-                    "-mb-px border-b-[2.5px] pb-3 text-[13px] transition-colors",
+                    "-mb-px whitespace-nowrap border-b-[2.5px] pb-3 text-[13px] transition-colors",
                     on
                       ? "border-accent font-bold text-accent"
                       : "border-transparent text-faint hover:text-ink",
@@ -181,12 +184,13 @@ export default function ProjectsPage() {
                 </button>
               );
             })}
+            </div>
             <SearchField
               value={query}
               onChange={setQuery}
               label="Search projects"
               placeholder="Client, service, contact"
-              className="ml-auto mb-2 w-56"
+              className="w-full sm:mb-2 sm:ml-auto sm:w-56"
             />
           </div>
 
@@ -261,7 +265,7 @@ function ProjectRow({
     <Link
       href={`/projects/${p.id}`}
       className={clsx(
-        "flex items-center gap-4 rounded-xl px-4 py-3 ring-1 transition-colors",
+        "flex items-center gap-3 rounded-xl px-3 py-3 ring-1 transition-colors sm:gap-4 sm:px-4",
         late
           ? "bg-danger-soft ring-danger/20 hover:bg-danger-soft/70"
           : "bg-surface ring-line hover:ring-line-strong",
@@ -272,8 +276,11 @@ function ProjectRow({
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-2">
-          <span className="min-w-0 truncate text-[14px] font-bold">
+        {/* The client's name gets the line to itself on a phone and the
+            chips drop under it. Sharing one line cost the name every
+            character it had: "Kirstenhof Pharmacy" arrived as "Kirste…". */}
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="min-w-0 max-w-full truncate text-[14px] font-bold">
             {p.client}
           </span>
           <Badge>{service.short}</Badge>
@@ -281,12 +288,35 @@ function ProjectRow({
             <Badge tone="purple">{phaseOf(p).label.split(" · ")[0]}</Badge>
           )}
         </span>
-        <span className="block truncate text-[12px] font-medium text-muted">
+        <span className="mt-0.5 block text-[12px] font-medium text-muted sm:truncate">
           {p.status === "complete"
             ? `Closed · ${service.authority} ${p.outcome === "declined" ? "declined" : "approved"} ${p.outcomeAt ? shortDate(p.outcomeAt) : ""}`
             : step
               ? `Step ${step.step} of ${WORKFLOW_STEPS}: ${step.label} · ${STEP_ROLE_LABEL[step.role]}`
               : "Every step closed"}
+        </span>
+
+        {/* The date column is a column on a desktop and a line here. */}
+        <span className="mt-1 flex flex-wrap items-center gap-x-2 text-[11px] sm:hidden">
+          <span
+            className={clsx(
+              "font-semibold tabular-nums",
+              late ? "text-danger" : "text-ink",
+            )}
+          >
+            {shortDate(p.submittedAt ?? p.dueDate)}
+          </span>
+          <span className="text-faint">
+            {p.submittedAt
+              ? "Submitted"
+              : capitalise(relativeDays(p.dueDate, now).replace("in ", ""))}
+          </span>
+          {missing > 0 && p.docsRequestedAt && (
+            <span className="text-muted">· {missing} docs out</span>
+          )}
+          {balance > 0 && (
+            <span className="font-medium text-danger">· {money(balance)} due</span>
+          )}
         </span>
       </span>
 
@@ -299,7 +329,7 @@ function ProjectRow({
         )}
       </span>
 
-      <span className="w-24 shrink-0 text-right">
+      <span className="hidden w-24 shrink-0 text-right sm:block">
         <span
           className={clsx(
             "block text-[12px] font-semibold tabular-nums",

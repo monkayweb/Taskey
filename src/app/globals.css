@@ -231,3 +231,20 @@ body {
   overflow-x: auto;
   scrollbar-width: thin;
 }
+
+/*
+ * A row of tabs on a phone. It runs off the side and scrolls rather than
+ * wrapping onto a second line, because a wrapped tab strip reads as two
+ * groups of tabs and the underline ends up over the wrong one. The scrollbar
+ * is hidden: this is a finger-width strip, not a scroll region anybody aims
+ * at, and the row is edge to edge so there is always something cut off to
+ * say it moves.
+ */
+.tab-strip {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tab-strip::-webkit-scrollbar {
+  display: none;
+}

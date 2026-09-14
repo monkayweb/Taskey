@@ -95,7 +95,7 @@ export function ProjectSheet({ project }: { project: Project }) {
   return (
     <div className="space-y-5">
       {/* --- one line of who and what -------------------------------- */}
-      <div className="flex flex-wrap items-start gap-x-4 gap-y-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-start sm:gap-x-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-[20px] font-bold tracking-tight">
@@ -135,7 +135,7 @@ export function ProjectSheet({ project }: { project: Project }) {
         <div
           role="tablist"
           aria-label="Project detail"
-          className="flex flex-wrap items-center gap-x-6 gap-y-1 border-b border-line"
+          className="tab-strip flex items-center gap-x-6 border-b border-line"
         >
           {TABS.map((t) => {
             const on = t.key === tab;
@@ -147,7 +147,7 @@ export function ProjectSheet({ project }: { project: Project }) {
                 aria-selected={on}
                 onClick={() => setTab(t.key)}
                 className={clsx(
-                  "-mb-px flex items-baseline gap-1.5 border-b-[2.5px] pb-2.5 pt-1 text-[13px] transition-colors",
+                  "-mb-px flex shrink-0 items-baseline gap-1.5 whitespace-nowrap border-b-[2.5px] pb-2.5 pt-1 text-[13px] transition-colors",
                   on
                     ? "border-accent font-bold text-accent"
                     : "border-transparent text-faint hover:text-ink",

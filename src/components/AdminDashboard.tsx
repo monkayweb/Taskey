@@ -84,7 +84,7 @@ export function AdminDashboard({ me }: { me: User }) {
       </div>
 
       {/* --- the four that matter -------------------------------------- */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatTile
           label="Open sheets"
           value={n.live.length}
@@ -396,22 +396,31 @@ function SheetRow({
   return (
     <Link
       href={`/projects/${p.id}`}
-      className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-sunken/60"
+      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-sunken/60 sm:px-5"
     >
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-2">
-          <span className="min-w-0 truncate text-[13px] font-semibold">
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="min-w-0 max-w-full truncate text-[13px] font-semibold">
             {p.client}
           </span>
           <Badge>{serviceById(p.serviceId).short}</Badge>
         </span>
-        <span className="mt-0.5 block truncate text-[11px] text-muted">
+        <span className="mt-0.5 block text-[11px] text-muted sm:truncate">
           {waitingOn(p, now)}
           {balance > 0 ? ` · ${money(balance)} due` : ""}
         </span>
+        <span
+          className={clsx(
+            "mt-1 block text-[11px] font-semibold tabular-nums sm:hidden",
+            late ? "text-danger" : "text-muted",
+          )}
+        >
+          {shortDate(p.dueDate)} ·{" "}
+          {capitalise(relativeDays(p.dueDate, now).replace("in ", ""))}
+        </span>
       </span>
 
-      <span className="w-24 shrink-0 text-right">
+      <span className="hidden w-24 shrink-0 text-right sm:block">
         <span
           className={clsx(
             "block text-[12px] font-semibold tabular-nums",
@@ -447,7 +456,10 @@ function Fact({
 }) {
   return (
     <div>
-      <dt className="eyebrow">{label}</dt>
+      {/* Three of these across a phone means a two-line label next to a
+          one-line label, so the box is held at two lines and the numbers
+          keep a common baseline. */}
+      <dt className="eyebrow min-h-[26px] leading-tight sm:min-h-0">{label}</dt>
       <dd
         className={clsx(
           "mt-1 text-[18px] font-medium tabular-nums",
