@@ -13,6 +13,8 @@
     "db:state": "dotenv -e .env.local -- tsx scripts/state.ts",
     "db:team": "dotenv -e .env.local -- tsx scripts/team.ts",
     "db:backfill": "dotenv -e .env.local -- tsx scripts/backfill-acknowledged.ts",
+    "db:quarantine": "dotenv -e .env.local -- tsx scripts/quarantine-demo.ts",
+    "db:wipe-samples": "dotenv -e .env.local -- tsx scripts/wipe-samples.ts",
     "cron:local": "curl -s -H \"Authorization: Bearer $(grep '^CRON_SECRET=' .env.local | cut -d= -f2)\" http://localhost:3000/api/cron/daily"
   },
   "dependencies": {

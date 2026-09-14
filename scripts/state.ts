@@ -22,13 +22,12 @@ async function main() {
   }
 
   const projects = await sql`
-    select client, status, paid_at, acknowledged_at, submitted_at
+    select client, status, contact_email, acknowledged_at, submitted_at
       from projects order by due_date`;
   console.log(`\n${projects.length} projects`);
   for (const p of projects) {
     console.log(
-      `  ${p.client.padEnd(28)} ${p.status.padEnd(9)} ` +
-        `ack ${p.acknowledged_at ? "yes" : "NO"}  ` +
+      `  ${p.client.padEnd(28)} ${p.status.padEnd(9)} ${String(p.contact_email).padEnd(34)} ` +
         `submitted ${p.submitted_at ? "yes" : "no"}`,
     );
   }
@@ -39,10 +38,35 @@ async function main() {
     console.log(`  ${l.company.padEnd(32)} ${l.stage.padEnd(11)} ${l.owner_id}`);
   }
 
-  const [tasks] = await sql`select count(*)::int as n from assignments`;
-  const [duties] = await sql`select count(*)::int as n from recurring_tasks`;
+  const tasks = await sql`
+    select
+      count(*)::int as total,
+      count(*) filter (where project_id is not null)::int as from_sheets,
+      count(*) filter (where recurring_id is not null)::int as from_duties,
+      count(*) filter (where project_id is null and recurring_id is null)::int as by_hand,
+      count(*) filter (where status = 'open')::int as open
+    from assignments`;
+  const t = tasks[0];
+  console.log(
+    `\n${t.total} tasks: ${t.from_sheets} off sheets, ${t.from_duties} off standing duties, ` +
+      `${t.by_hand} handed out by name (${t.open} open)`,
+  );
+
+  const duties = await sql`
+    select r.title, r.assignee_ids, r.active from recurring_tasks r order by r.title`;
+  console.log(`\n${duties.length} standing duties`);
+  for (const d of duties) {
+    const who = await sql`
+      select name, archived_at is not null as gone from users
+       where id = any(${d.assignee_ids})`;
+    console.log(
+      `  ${String(d.title).slice(0, 40).padEnd(42)} ${d.active ? "active" : "paused"}  ` +
+        who.map((w) => `${w.name}${w.gone ? " (archived)" : ""}`).join(", "),
+    );
+  }
+
   const [trail] = await sql`select count(*)::int as n from audit`;
-  console.log(`\n${tasks.n} tasks, ${duties.n} standing duties, ${trail.n} trail entries`);
+  console.log(`\n${trail.n} trail entries`);
 }
 
 main().catch((e) => {
