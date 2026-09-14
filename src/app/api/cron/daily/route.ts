@@ -142,8 +142,11 @@ export async function GET(request: Request) {
     ...ws.projects.flatMap((p) => projectFlags(p, now, ws.users)),
   ].sort(byPriority);
 
+  // Management gets a digest as well as the team, but somebody who has left
+  // gets nothing: isActiveEmployee already excludes them, and the management
+  // branch has to say so too or an archived admin keeps hearing from us.
   for (const person of ws.users.filter(
-    (u) => isActiveEmployee(u) || u.role === "admin",
+    (u) => !u.archivedAt && (isActiveEmployee(u) || u.role === "admin"),
   )) {
     const mine = flags.filter((f) => f.ownerId === person.id);
     if (mine.length === 0) continue;

@@ -13,11 +13,11 @@ const sql = neon(
 
 async function main() {
   const users = await sql`
-    select id, name, email, work_role, archived_at from users order by name`;
+    select id, name, email, role, work_role, archived_at from users order by name`;
   console.log(`${users.length} users`);
   for (const u of users) {
     console.log(
-      `  ${u.id.padEnd(12)} ${u.name.padEnd(20)} ${u.work_role.padEnd(11)} ${u.email}${u.archived_at ? "  (archived)" : ""}`,
+      `  ${u.id.padEnd(12)} ${u.name.padEnd(20)} ${u.role.padEnd(9)} ${u.work_role.padEnd(11)} ${u.email}${u.archived_at ? "  (archived)" : ""}`,
     );
   }
 
