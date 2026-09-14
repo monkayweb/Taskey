@@ -7,6 +7,8 @@ import { useTaskey } from "@/lib/store";
 import { useNow } from "@/lib/now";
 import { dayKey, workWeek } from "@/lib/date";
 import { LegendItem, Panel, Tabs, type Tone } from "./ui";
+import { activeEmployees } from "@/lib/rules";
+import type { User } from "@/lib/types";
 
 type Range = "week" | "month" | "quarter";
 
@@ -21,7 +23,11 @@ const RANGES: { value: Range; label: string }[] = [
  * The order matters: amber between green and red is what clears the
  * colour-vision separation check, so never reorder these.
  */
-const SERIES: { key: "done" | "partial" | "missed"; label: string; tone: Tone }[] = [
+const SERIES: {
+  key: "done" | "partial" | "missed";
+  label: string;
+  tone: Tone;
+}[] = [
   { key: "done", label: "Completed", tone: "ok" },
   { key: "partial", label: "Partly done", tone: "warn" },
   { key: "missed", label: "Missed", tone: "danger" },
@@ -41,16 +47,30 @@ interface Bucket {
   missed: number;
 }
 
-export function OverviewChart({ scope }: { scope: "me" | "team" }) {
+/**
+ * `scope` picks the population: the whole team, whoever is signed in, or one
+ * named person when management is looking at their record.
+ */
+export function OverviewChart({
+  scope,
+  person,
+  defaultRange = "week",
+}: {
+  scope: "me" | "team";
+  person?: User;
+  /** Early in a week there is nothing submitted yet, so a caller looking at
+      a finished period opens on "month" rather than an empty plot. */
+  defaultRange?: Range;
+}) {
   const now = useNow();
-  const [range, setRange] = useState<Range>("week");
+  const [range, setRange] = useState<Range>(defaultRange);
   const { logs, users, currentUserId } = useTaskey();
 
   const { buckets, axisMax, ticks, totals } = useMemo(() => {
     const people =
       scope === "team"
-        ? users.filter((u) => u.role === "employee")
-        : users.filter((u) => u.id === currentUserId);
+        ? activeEmployees(users)
+        : users.filter((u) => u.id === (person?.id ?? currentUserId));
     const ids = new Set(people.map((p) => p.id));
 
     // Buckets are laid out first so empty periods still occupy the axis.
@@ -70,8 +90,7 @@ export function OverviewChart({ scope }: { scope: "me" | "team" }) {
         order.push(k);
         labels[k] = format(parseISO(k), "d MMM");
       }
-      bucketOf = (d) =>
-        dayKey(startOfWeek(parseISO(d), { weekStartsOn: 1 }));
+      bucketOf = (d) => dayKey(startOfWeek(parseISO(d), { weekStartsOn: 1 }));
     } else {
       for (let i = 2; i >= 0; i--) {
         const k = format(subMonths(now, i), "yyyy-MM");
@@ -82,7 +101,10 @@ export function OverviewChart({ scope }: { scope: "me" | "team" }) {
     }
 
     const map = new Map<string, Bucket>(
-      order.map((k) => [k, { key: k, label: labels[k], done: 0, partial: 0, missed: 0 }]),
+      order.map((k) => [
+        k,
+        { key: k, label: labels[k], done: 0, partial: 0, missed: 0 },
+      ]),
     );
 
     // Only submitted logs count: an unsubmitted day has outcomes yet to be
@@ -115,7 +137,7 @@ export function OverviewChart({ scope }: { scope: "me" | "team" }) {
         missed: buckets.reduce((a, b) => a + b.missed, 0),
       },
     };
-  }, [logs, users, currentUserId, now, range, scope]);
+  }, [logs, users, currentUserId, person, now, range, scope]);
 
   const plotH = 176;
 
@@ -124,8 +146,10 @@ export function OverviewChart({ scope }: { scope: "me" | "team" }) {
       title="Overview"
       subtitle={
         scope === "team"
-          ? "Block outcomes across the team, from submitted days only"
-          : "Your block outcomes, from submitted days only"
+          ? "Daily task outcomes across the team, from submitted days only"
+          : person
+            ? `${person.name.split(" ")[0]}'s daily task outcomes, from submitted days only`
+            : "Your daily task outcomes, from submitted days only"
       }
       action={<Tabs value={range} options={RANGES} onChange={setRange} />}
     >
@@ -134,7 +158,7 @@ export function OverviewChart({ scope }: { scope: "me" | "team" }) {
           {ticks.map((t, i) => (
             <span
               key={i}
-              className="absolute right-0 -translate-y-1/2 font-mono text-[10px] tabular-nums text-faint"
+              className="absolute right-0 -translate-y-1/2 text-[10px] tabular-nums text-faint"
               style={{ top: (i / (ticks.length - 1)) * plotH }}
             >
               {t}
@@ -156,7 +180,10 @@ export function OverviewChart({ scope }: { scope: "me" | "team" }) {
             style={{ height: plotH }}
           >
             {buckets.map((b) => (
-              <div key={b.key} className="group relative flex h-full flex-1 flex-col justify-end">
+              <div
+                key={b.key}
+                className="group relative flex h-full flex-1 flex-col justify-end"
+              >
                 {/* one group of three thin bars, 2px apart */}
                 <div className="mx-auto flex h-full w-full max-w-[96px] items-end justify-center gap-1">
                   {SERIES.map((s) => {
@@ -190,7 +217,8 @@ export function OverviewChart({ scope }: { scope: "me" | "team" }) {
                     <p className="text-white/70">No submitted days</p>
                   ) : (
                     <p className="text-white/80">
-                      {b.done} completed · {b.partial} partly · {b.missed} missed
+                      {b.done} completed · {b.partial} partly · {b.missed}{" "}
+                      missed
                     </p>
                   )}
                 </div>

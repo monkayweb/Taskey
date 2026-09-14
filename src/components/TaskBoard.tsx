@@ -43,7 +43,7 @@ export function TaskBoard({ log }: { log: DailyLog }) {
                 ? "Day submitted"
                 : pending === 0
                   ? "Everything is logged"
-                  : `${pending} block${pending === 1 ? "" : "s"} left to log`}
+                  : `${pending} task${pending === 1 ? "" : "s"} left to log`}
             </h2>
             <p className="mt-0.5 text-xs text-muted">
               {locked
@@ -57,7 +57,7 @@ export function TaskBoard({ log }: { log: DailyLog }) {
               Locked
             </Badge>
           ) : (
-            <span className="font-mono text-[22px] font-medium tabular-nums">
+            <span className="text-[22px] font-medium tabular-nums">
               {log.blocks.length - pending}
               <span className="text-faint">/{log.blocks.length}</span>
             </span>
@@ -83,7 +83,7 @@ export function TaskBoard({ log }: { log: DailyLog }) {
       {log.blocks.length === 0 ? (
         <Panel>
           <Empty
-            title="No calendar blocks today"
+            title="No calendar tasks today"
             detail="Nothing was scheduled for this date, so no log is expected."
           />
         </Panel>
@@ -119,7 +119,7 @@ export function TaskBoard({ log }: { log: DailyLog }) {
           <div className="space-y-2">
             <p className="text-[13px]">
               Submitted at{" "}
-              <span className="font-mono">{clockTime(log.submittedAt!)}</span> and
+              <span className="tabular-nums">{clockTime(log.submittedAt!)}</span> and
               locked. The summary has gone to management.
             </p>
             {log.summaryNote && (
@@ -146,9 +146,9 @@ export function TaskBoard({ log }: { log: DailyLog }) {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-xs text-muted">
                 {pending > 0
-                  ? `${pending} block${pending === 1 ? "" : "s"} still to log.`
+                  ? `${pending} task${pending === 1 ? "" : "s"} still to log.`
                   : unexplained > 0
-                    ? `${unexplained} block${unexplained === 1 ? " needs" : "s need"} a reason.`
+                    ? `${unexplained} task${unexplained === 1 ? " needs" : "s need"} a reason.`
                     : "Ready to send. Once submitted this log is locked."}
               </p>
               <button
@@ -195,7 +195,7 @@ function ExtraTasks({ log, locked }: { log: DailyLog; locked: boolean }) {
             >
               <span className="min-w-0 flex-1 truncate font-medium">{t.label}</span>
               <Badge>{CATEGORY_LABEL[t.category]}</Badge>
-              <span className="font-mono text-[12px] tabular-nums text-muted">
+              <span className="text-[12px] tabular-nums text-muted">
                 {t.minutes}m
               </span>
               {!locked && (

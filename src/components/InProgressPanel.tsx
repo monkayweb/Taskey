@@ -1,23 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Plus } from "lucide-react";
-import { useTaskey } from "@/lib/store";
+import { ArrowRight } from "lucide-react";
 import { useNow } from "@/lib/now";
 import { dayKey, relativeDays } from "@/lib/date";
+import { serviceById, stepsDone, WORKFLOW_STEPS } from "@/lib/services";
 import type { Project } from "@/lib/types";
 import { Empty, Panel, ProgressRow } from "./ui";
 
+/**
+ * A project cannot be created from here, or anywhere else by hand: a sheet
+ * exists because a client paid. So this panel reads, and points at the sheet.
+ */
 export function InProgressPanel({ projects }: { projects: Project[] }) {
   const now = useNow();
   const today = dayKey(now);
-  const addProject = useTaskey((s) => s.addProject);
-  const [adding, setAdding] = useState(false);
-  const [name, setName] = useState("");
-  const [client, setClient] = useState("");
-  const [dueDate, setDueDate] = useState("");
-
   const active = projects.filter((p) => p.status !== "complete");
 
   return (
@@ -33,22 +30,24 @@ export function InProgressPanel({ projects }: { projects: Project[] }) {
       }
     >
       {active.length === 0 ? (
-        <Empty title="No active projects" />
+        <Empty
+          title="No active projects"
+          detail="A project sheet opens itself the moment a client's payment is recorded."
+        />
       ) : (
         <div className="space-y-4">
           {active.slice(0, 3).map((p) => {
-            const done = p.milestones.filter((m) => m.done).length;
+            const done = stepsDone(p);
             const total = p.milestones.length;
-            const behind = p.milestones.some((m) => !m.done && m.dueDate < today);
+            const step = p.milestones.find((m) => !m.done);
+            const behind = p.milestones.some(
+              (m) => !m.done && m.dueDate < today,
+            );
             return (
               <ProgressRow
                 key={p.id}
-                label={p.name}
-                detail={
-                  total === 0
-                    ? `${p.client} · delivers ${relativeDays(p.dueDate, now)}`
-                    : `${p.client} · ${done}/${total} milestones · delivers ${relativeDays(p.dueDate, now)}`
-                }
+                label={p.client}
+                detail={`${serviceById(p.serviceId).short} · step ${step ? step.step : WORKFLOW_STEPS} of ${WORKFLOW_STEPS} · ${p.submittedAt ? "submitted" : `submits ${relativeDays(p.dueDate, now)}`}`}
                 pct={total === 0 ? 0 : done / total}
                 behind={behind}
               />
@@ -57,66 +56,13 @@ export function InProgressPanel({ projects }: { projects: Project[] }) {
         </div>
       )}
 
-      {adding ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (!name.trim() || !dueDate) return;
-            addProject({
-              name: name.trim(),
-              client: client.trim() || "Internal",
-              dueDate,
-            });
-            setName("");
-            setClient("");
-            setDueDate("");
-            setAdding(false);
-          }}
-          className="mt-4 space-y-2"
-        >
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Project name"
-            className="field h-9 py-0 text-[13px]"
-            autoFocus
-          />
-          <input
-            value={client}
-            onChange={(e) => setClient(e.target.value)}
-            placeholder="Client"
-            className="field h-9 py-0 text-[13px]"
-          />
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="field h-9 py-0 text-[13px]"
-            aria-label="Delivery date"
-          />
-          <div className="flex gap-2">
-            <button type="submit" className="btn btn-primary btn-sm flex-1">
-              Create
-            </button>
-            <button
-              type="button"
-              onClick={() => setAdding(false)}
-              className="btn btn-ghost btn-sm"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setAdding(true)}
-          className="btn btn-primary btn-md mt-4 w-full"
-        >
-          Add new project
-          <Plus size={15} />
-        </button>
-      )}
+      <Link
+        href="/projects"
+        className="btn btn-primary btn-md mt-4 w-full"
+      >
+        Open the project sheets
+        <ArrowRight size={15} />
+      </Link>
     </Panel>
   );
 }

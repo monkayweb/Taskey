@@ -63,7 +63,7 @@ export function GlobalSearch() {
     for (const b of log?.blocks ?? []) {
       if (b.label.toLowerCase().includes(term))
         out.push({
-          group: "Today's blocks",
+          group: "Today's tasks",
           label: b.label,
           detail: `${b.start}–${b.end}`,
           href: "/tasks",
@@ -95,7 +95,7 @@ export function GlobalSearch() {
           blurTimer.current = setTimeout(() => setOpen(false), 120);
         }}
         onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
-        placeholder="Search leads, projects, blocks"
+        placeholder="Search leads, projects, tasks"
         aria-label="Search"
         className="field h-9 rounded-full bg-sunken pl-9 pr-8 text-[13px]"
       />

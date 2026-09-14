@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 /* --------------------------------------------------------------------------
-   Taskey: indigo and pink on a periwinkle ground, with the whole app sitting
-   on a floating white sheet. Single light theme by choice.
+   Taskey: indigo and pink, full bleed. The nav is a white rail fixed to the
+   left edge, the content sits on the tinted ground. Single light theme by
+   choice.
    -------------------------------------------------------------------------- */
 
 @theme inline {
-  /* The periwinkle behind the sheet, and the sheet itself. */
+  /* The nav rail is white; the content sits on a barely-blue off-white, so a
+     white card is visible against it without needing a shadow to lift it. */
   --color-canvas: #e6e8f9;
   --color-sheet: #ffffff;
-  --color-content: #f6f7fc;
+  --color-content: #f2f4fb;
 
   --color-surface: #ffffff;
   --color-sunken: #f4f5fa;
@@ -34,6 +36,13 @@
   /* Same ramp as the accent, used as the unfilled track behind a data mark. */
   --color-track: #e7e9f6;
 
+  /* The rotating fills behind the task tiles, matched to the reference.
+     Pink and green sit under 4.5:1 with white, so text on them is kept bold
+     and never dropped below full white. */
+  --color-tile-indigo: #575fc7;
+  --color-tile-pink: #ee5a7a;
+  --color-tile-teal: #3cbd91;
+
   /* Status. Dark steps for text, validated bright steps for data fills.
      Charts must order these done -> partly -> missed so amber sits between
      green and red; that ordering is what clears the CVD separation check.
@@ -49,16 +58,19 @@
   --color-danger-fill: #d03b3b;
   --color-danger-soft: #fcebea;
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   color-scheme: light;
-  --shadow-card: 0 1px 2px rgba(26, 28, 43, 0.03), 0 2px 8px rgba(26, 28, 43, 0.04);
-  --shadow-pop: 0 2px 6px rgba(26, 28, 43, 0.07), 0 14px 36px rgba(26, 28, 43, 0.12);
-  --shadow-sheet: 0 10px 44px rgba(26, 28, 43, 0.1);
-  --shadow-accent: 0 1px 2px rgba(58, 65, 171, 0.22), 0 6px 16px rgba(79, 87, 210, 0.26);
+  /* Kept as a token because overlays still use it. Cards do not: they are
+     separated by sitting on a tinted ground, which is quieter and truer than
+     a shadow on every block. */
+  --shadow-card: none;
+  --shadow-pop:
+    0 2px 6px rgba(26, 28, 43, 0.07), 0 14px 36px rgba(26, 28, 43, 0.12);
+  --shadow-accent:
+    0 1px 2px rgba(58, 65, 171, 0.22), 0 6px 16px rgba(79, 87, 210, 0.26);
 }
 
 body {
@@ -71,7 +83,6 @@ body {
 @layer components {
   .card {
     @apply rounded-2xl bg-surface ring-1 ring-line;
-    box-shadow: var(--shadow-card);
   }
 
   /* Section heading used above every panel. */
@@ -83,12 +94,15 @@ body {
     @apply inline-flex items-center justify-center gap-1.5 rounded-full text-sm
            font-medium transition-all disabled:cursor-not-allowed disabled:opacity-45;
   }
-  .btn-md { @apply h-9 px-4; }
-  .btn-sm { @apply h-8 px-3 text-[13px]; }
+  .btn-md {
+    @apply h-9 px-4;
+  }
+  .btn-sm {
+    @apply h-8 px-3 text-[13px];
+  }
 
   .btn-primary {
     @apply bg-accent text-white hover:bg-accent-ink;
-    box-shadow: var(--shadow-accent);
   }
   .btn-ghost {
     @apply bg-sunken text-ink ring-1 ring-line hover:bg-accent-soft hover:ring-accent/25;
@@ -105,8 +119,111 @@ body {
 
   /* Numeric columns in the KPI and audit tables. */
   .num {
-    @apply text-right font-mono text-[13px] tabular-nums;
+    @apply text-right text-[13px] tabular-nums;
   }
+}
+
+/* The message bar arriving. Keyed by its own text, so a second message
+   replays the movement rather than swapping silently. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-in {
+  animation: toast-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-in {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Clerk's own components, on the sign-in page only.
+   
+   Scoped to .auth-page on purpose: these rules used to be global, which meant
+   they also cropped the account panel, a different Clerk component that needs
+   its header and its own layout. The sign-in page carries its own heading, so
+   only there is Clerk's dropped.
+   -------------------------------------------------------------------------- */
+
+.auth-page .cl-header {
+  display: none;
+}
+
+.auth-page .cl-cardBox {
+  width: 100%;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+}
+
+.auth-page .cl-card {
+  padding-top: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Waiting. A skeleton is a promise about the shape of what is coming, so the
+   blocks match the real thing's geometry rather than being generic bars.
+   -------------------------------------------------------------------------- */
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-track);
+  border-radius: 6px;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}
+
+/* The thin line across the top of the content while the server is working. */
+@keyframes busy-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.busy-bar::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: 25%;
+  background: var(--color-accent);
+  animation: busy-slide 1.1s ease-in-out infinite;
 }
 
 /* Keep long tables scrollable inside their panel instead of the page. */

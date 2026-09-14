@@ -8,6 +8,7 @@ import { useNow } from "@/lib/now";
 import { dayKey } from "@/lib/date";
 import { scoreTone } from "@/lib/kpi";
 import { Avatar, Badge, Panel } from "./ui";
+import { activeEmployees } from "@/lib/rules";
 
 /**
  * Who else is on today. Scores are management-only, because surfacing a
@@ -19,7 +20,7 @@ export function TeamList({ showScores }: { showScores: boolean }) {
   const { users, logs, currentUserId } = useTaskey();
   const kpis = useWeekKpis();
 
-  const team = users.filter((u) => u.role === "employee" && u.id !== currentUserId);
+  const team = activeEmployees(users).filter((u) => u.id !== currentUserId);
 
   return (
     <Panel

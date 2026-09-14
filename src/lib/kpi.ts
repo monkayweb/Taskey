@@ -54,11 +54,14 @@ export function kpiForUser(
   const inWeek = (iso?: string) =>
     !!iso && iso.slice(0, 10) >= weekStart && iso.slice(0, 10) <= weekEnd;
 
+  const inRange = new Set(week);
   const myLogs = logs.filter(
-    (l) => l.userId === user.id && week.includes(l.date),
+    (l) => l.userId === user.id && inRange.has(l.date),
   );
   const submitted = myLogs.filter((l) => l.submittedAt);
-  const logsExpected = week.filter((d) => logExpected(templates, user.id, d)).length;
+  const logsExpected = week.filter((d) =>
+    logExpected(templates, user.id, d),
+  ).length;
 
   const blocks = submitted.flatMap((l) => l.blocks);
   const blocksDone = blocks.filter((b) => b.status === "done").length;
@@ -122,7 +125,8 @@ export function kpiForUser(
       (e) => e.userId === user.id && inWeek(e.createdAt),
     ).length,
     score: Math.round(
-      (completionRate * 0.4 + submissionRate * 0.3 + responsiveness * 0.3) * 100,
+      (completionRate * 0.4 + submissionRate * 0.3 + responsiveness * 0.3) *
+        100,
     ),
   };
 }

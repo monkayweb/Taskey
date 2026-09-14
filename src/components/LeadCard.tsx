@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import clsx from "clsx";
 import {
   ChevronDown,
   Clock,
   FileText,
+  FolderKanban,
   MessageCircleReply,
   TriangleAlert,
 } from "lucide-react";
@@ -109,7 +111,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
         </div>
 
         <div className="text-right">
-          <p className="font-mono text-[13px] tabular-nums">{money(lead.value)}</p>
+          <p className="text-[13px] tabular-nums">{money(lead.value)}</p>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -172,7 +174,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
                   step={500}
                   value={quoteValue}
                   onChange={(e) => setQuoteValue(Number(e.target.value))}
-                  className="field h-8 w-[120px] py-0 font-mono text-[13px]"
+                  className="field h-8 w-[120px] py-0 text-[13px]"
                   aria-label="Quote value"
                 />
                 <button
@@ -209,10 +211,42 @@ export function LeadCard({ lead }: { lead: Lead }) {
             </div>
           )}
 
+          {lead.stage === "won" && (
+            <div className="flex flex-wrap items-center gap-2 rounded-xl bg-ok-soft/50 px-3 py-2.5">
+              {lead.projectId ? (
+                <>
+                  <span className="text-[13px] font-medium">
+                    Won, and the sheet is open.
+                  </span>
+                  <Link
+                    href={`/projects/${lead.projectId}`}
+                    className="btn btn-ghost btn-sm"
+                  >
+                    <FolderKanban size={14} />
+                    Open the project
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <span className="text-[13px] font-medium">
+                    Won. The sheet opens when the payment is recorded.
+                  </span>
+                  <Link
+                    href={`/projects?lead=${lead.id}`}
+                    className="btn btn-primary btn-sm"
+                  >
+                    <FolderKanban size={14} />
+                    Open the project sheet
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
+
           <ol className="space-y-1.5 border-t border-line pt-3">
             {lead.activity.map((a) => (
               <li key={a.id} className="flex gap-2 text-xs">
-                <span className="w-[76px] shrink-0 font-mono tabular-nums text-faint">
+                <span className="w-[76px] shrink-0 tabular-nums text-faint">
                   {shortDate(a.at)} {clockTime(a.at)}
                 </span>
                 <span className="text-muted">

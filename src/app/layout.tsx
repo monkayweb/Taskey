@@ -1,31 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+import { clerkAppearance } from "@/lib/clerk-appearance";
 import "./globals.css";
-import { NowProvider } from "@/lib/now";
-import { TaskeyGate } from "@/components/TaskeyGate";
-import { AppShell } from "@/components/AppShell";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Taskey: daily accountability for small teams",
+  title: "Taskey",
   description:
-    "Calendar-synced daily checklists, automated quote follow-ups, workload escalation and KPI reporting.",
+    "Project sheets that date themselves from the day a client pays, and chase what is late without being asked.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+/**
+ * Only the shell and the session live here. Everything that needs a signed-in
+ * team member is inside the (app) group, so the sign-in page itself is not
+ * behind the gate that would send people to it.
+ */
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${dmSans.variable} h-full antialiased`}>
       <body className="min-h-full">
-        <NowProvider>
-          <TaskeyGate>
-            <AppShell>{children}</AppShell>
-          </TaskeyGate>
-        </NowProvider>
+        <ClerkProvider appearance={clerkAppearance}>{children}</ClerkProvider>
       </body>
     </html>
   );

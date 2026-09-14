@@ -1,16 +1,11 @@
 "use client";
 
 import clsx from "clsx";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import type { ReactNode } from "react";
 
 export type Tone =
-  | "neutral"
-  | "accent"
-  | "pink"
-  | "purple"
-  | "ok"
-  | "warn"
-  | "danger";
+  "neutral" | "accent" | "pink" | "purple" | "ok" | "warn" | "danger";
 
 const TONE_BADGE: Record<Tone, string> = {
   pink: "bg-pink-soft text-pink ring-pink/15",
@@ -101,7 +96,9 @@ export function Panel({
                 {title}
               </h2>
             )}
-            {subtitle && <p className="mt-0.5 text-xs text-muted">{subtitle}</p>}
+            {subtitle && (
+              <p className="mt-0.5 text-xs text-muted">{subtitle}</p>
+            )}
           </div>
           {action && <div className="shrink-0">{action}</div>}
         </header>
@@ -117,37 +114,90 @@ export function StatTile({
   hint,
   tone = "neutral",
   icon,
+  filled,
+  delta,
+  deltaGoodWhenUp = true,
+  deltaUnit = "",
 }: {
   label: string;
   value: ReactNode;
   hint?: ReactNode;
   tone?: Tone;
   icon?: ReactNode;
+  /**
+   * The brand fill, for the one number on a page that leads. `tone` is
+   * ignored when filled: a status colour on the accent would be unreadable,
+   * so the standing on that measure belongs in the hint instead.
+   */
+  filled?: boolean;
+  /** Change against the previous comparable period. Hidden when 0 or null. */
+  delta?: number | null;
+  /** Set false where a rise is the bad direction, e.g. missed work. */
+  deltaGoodWhenUp?: boolean;
+  deltaUnit?: string;
 }) {
   return (
-    <div className="card px-5 py-4">
+    <div
+      className={clsx("px-5 py-4", filled ? "rounded-2xl bg-accent" : "card")}
+    >
       <div className="flex items-start justify-between gap-2">
-        <p className="eyebrow">{label}</p>
+        <p className={clsx("eyebrow", filled && "text-white/70")}>{label}</p>
         {icon && (
           <span
             className={clsx(
               "grid size-7 shrink-0 place-items-center rounded-full",
-              tone === "neutral" ? "bg-accent-soft text-accent" : TONE_BADGE[tone],
+              filled
+                ? "bg-white/15 text-white"
+                : tone === "neutral"
+                  ? "bg-accent-soft text-accent"
+                  : TONE_BADGE[tone],
             )}
           >
             {icon}
           </span>
         )}
       </div>
-      <p
-        className={clsx(
-          "mt-2 font-mono text-[28px] tabular-nums leading-none tracking-tight",
-          TONE_TEXT[tone],
+      <div className="mt-2 flex items-end gap-2.5">
+        <p
+          className={clsx(
+            "text-[28px] tabular-nums leading-none tracking-tight",
+            filled ? "font-semibold text-white" : TONE_TEXT[tone],
+          )}
+        >
+          {value}
+        </p>
+
+        {delta !== null && delta !== undefined && delta !== 0 && (
+          <span
+            className={clsx(
+              "mb-0.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[11px] font-semibold tabular-nums",
+              filled
+                ? "bg-white/15 text-white"
+                : delta > 0 === deltaGoodWhenUp
+                  ? "bg-ok-soft text-ok"
+                  : "bg-danger-soft text-danger",
+            )}
+          >
+            {delta > 0 ? (
+              <ArrowUp size={11} strokeWidth={3} aria-hidden />
+            ) : (
+              <ArrowDown size={11} strokeWidth={3} aria-hidden />
+            )}
+            {Math.abs(delta)}
+            {deltaUnit}
+          </span>
         )}
-      >
-        {value}
-      </p>
-      {hint && <p className="mt-2 text-xs text-muted">{hint}</p>}
+      </div>
+      {hint && (
+        <p
+          className={clsx(
+            "mt-2 text-xs",
+            filled ? "text-white/75" : "text-muted",
+          )}
+        >
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
@@ -202,7 +252,9 @@ export function Empty({
         </div>
       )}
       <p className="text-[14px] font-medium text-ink">{title}</p>
-      {detail && <p className="max-w-sm text-xs leading-relaxed text-muted">{detail}</p>}
+      {detail && (
+        <p className="max-w-sm text-xs leading-relaxed text-muted">{detail}</p>
+      )}
     </div>
   );
 }
@@ -211,12 +263,10 @@ export function Avatar({
   name,
   tint,
   size = 28,
-  ring,
 }: {
   name: string;
   tint: string;
   size?: number;
-  ring?: boolean;
 }) {
   const initials = name
     .split(" ")
@@ -225,15 +275,14 @@ export function Avatar({
     .join("");
   return (
     <span
-      className={clsx(
-        "inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white",
-        ring && "ring-2 ring-surface",
-      )}
+      className="inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white"
       style={{
         width: size,
         height: size,
         background: tint,
-        fontSize: size * 0.4,
+        // Initials sit inside a circle, so they read smaller than a square
+        // of the same size would suggest.
+        fontSize: size * 0.34,
       }}
       aria-hidden
     >
@@ -258,13 +307,13 @@ export function AvatarStack({
     <div className="flex items-center">
       {shown.map((p, i) => (
         <span key={p.name} className={i > 0 ? "-ml-2" : undefined}>
-          <Avatar name={p.name} tint={p.tint} size={size} ring />
+          <Avatar name={p.name} tint={p.tint} size={size} />
         </span>
       ))}
       {rest > 0 && (
         <span
-          className="-ml-2 grid place-items-center rounded-full bg-accent-soft font-semibold text-accent-ink ring-2 ring-surface"
-          style={{ width: size, height: size, fontSize: size * 0.38 }}
+          className="-ml-2 grid place-items-center rounded-full bg-accent-soft font-semibold text-accent-ink"
+          style={{ width: size, height: size, fontSize: size * 0.33 }}
         >
           +{rest}
         </span>
@@ -275,6 +324,60 @@ export function AvatarStack({
 
 export const pctText = (n: number) => `${Math.round(n * 100)}%`;
 
+/** Quiet label above a row of controls. */
+export function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div>
+      <p className="mb-2 text-[11px] font-medium text-faint">{label}</p>
+      {children}
+      {hint && <p className="mt-1.5 text-[11px] text-muted">{hint}</p>}
+    </div>
+  );
+}
+
+/** A pressed-in-or-out choice. Used wherever a form picks one of a few things. */
+export function Chip({
+  on,
+  tone = "accent",
+  onClick,
+  children,
+  className,
+}: {
+  on: boolean;
+  tone?: "accent" | "danger";
+  onClick: () => void;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={onClick}
+      className={clsx(
+        "inline-flex h-9 items-center justify-center gap-1.5 rounded-lg px-3 text-[12px] font-semibold transition-colors",
+        on
+          ? tone === "danger"
+            ? "bg-danger-fill text-white"
+            : "bg-accent text-white"
+          : tone === "danger"
+            ? "bg-danger-soft text-danger hover:bg-danger-soft/70"
+            : "bg-accent-soft text-accent-ink hover:bg-accent-soft/70",
+        className,
+      )}
+    >
+      {children}
+    </button>
+  );
+}
 
 /** Underlined period tabs, as on the overview panel. */
 export function Tabs<T extends string>({
@@ -373,7 +476,7 @@ export function RingMeter({
         ))}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-mono text-[30px] font-medium tabular-nums leading-none">
+        <span className="text-[30px] font-medium tabular-nums leading-none">
           {centerValue}
         </span>
         {centerLabel && (
@@ -399,7 +502,7 @@ export function LegendItem({
       <span className={clsx("size-2 shrink-0 rounded-full", TONE_FILL[tone])} />
       <span className="min-w-0 flex-1 truncate text-muted">{label}</span>
       {value !== undefined && (
-        <span className="font-mono tabular-nums text-ink">{value}</span>
+        <span className="tabular-nums text-ink">{value}</span>
       )}
     </div>
   );
@@ -432,7 +535,7 @@ export function StatSquare({
       <span className="grid size-7 place-items-center rounded-lg bg-white/20">
         {icon}
       </span>
-      <p className="mt-2.5 font-mono text-[20px] font-medium tabular-nums leading-none">
+      <p className="mt-2.5 text-[20px] font-medium tabular-nums leading-none">
         {value}
       </p>
       <p className="mt-1 truncate text-[11px] opacity-85">{label}</p>
@@ -464,7 +567,7 @@ export function ProgressRow({
     <div>
       <span
         className={clsx(
-          "font-mono text-[11px] font-medium tabular-nums",
+          "text-[11px] font-medium tabular-nums",
           behind ? "text-danger" : "text-accent",
         )}
       >
@@ -496,7 +599,88 @@ export function ProgressRow({
         )}
       </div>
 
-      <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-muted">{detail}</p>
+      <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-muted">
+        {detail}
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Waiting
+// ---------------------------------------------------------------------------
+
+/**
+ * One block of something that has not arrived. Sized in the caller, because a
+ * skeleton is only useful if it is the shape of the thing it stands in for.
+ */
+export function Skeleton({
+  className,
+  w,
+  h = 12,
+}: {
+  className?: string;
+  /** Any CSS width. A percentage varies the line lengths so it reads as text. */
+  w?: string | number;
+  h?: number;
+}) {
+  return (
+    <span
+      aria-hidden
+      className={clsx("skeleton block", className)}
+      style={{ width: w, height: h }}
+    />
+  );
+}
+
+/** A few lines of type, of uneven length, the way real prose sits. */
+export function SkeletonLines({
+  lines = 3,
+  className,
+}: {
+  lines?: number;
+  className?: string;
+}) {
+  const widths = ["92%", "78%", "85%", "64%", "88%"];
+  return (
+    <span className={clsx("flex flex-col gap-2", className)}>
+      {Array.from({ length: lines }, (_, i) => (
+        <Skeleton key={i} w={widths[i % widths.length]} h={10} />
+      ))}
+    </span>
+  );
+}
+
+/** A stat tile before its number lands. */
+export function SkeletonTile() {
+  return (
+    <div className="card px-5 py-4">
+      <Skeleton w="45%" h={8} />
+      <Skeleton className="mt-3" w="35%" h={22} />
+      <Skeleton className="mt-3" w="70%" h={8} />
+    </div>
+  );
+}
+
+/** A panel with a heading and a few rows in it. */
+export function SkeletonPanel({ rows = 3 }: { rows?: number }) {
+  return (
+    <div className="card overflow-hidden">
+      <div className="px-5 pb-3 pt-4">
+        <Skeleton w="34%" h={13} />
+        <Skeleton className="mt-2" w="58%" h={9} />
+      </div>
+      <div className="divide-y divide-line border-t border-line">
+        {Array.from({ length: rows }, (_, i) => (
+          <div key={i} className="flex items-center gap-3 px-5 py-3">
+            <Skeleton className="shrink-0 rounded-xl" w={32} h={32} />
+            <span className="min-w-0 flex-1">
+              <Skeleton w={`${70 - i * 8}%`} h={11} />
+              <Skeleton className="mt-1.5" w={`${45 + i * 6}%`} h={9} />
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

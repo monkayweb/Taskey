@@ -2,18 +2,40 @@
 
 import Link from "next/link";
 import clsx from "clsx";
-import { ArrowRight, Clock, FileText, FolderKanban, MessageSquareDot } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  ClipboardList,
+  Clock,
+  FileText,
+  FolderKanban,
+  Landmark,
+  MailQuestion,
+  MessageSquareDot,
+  Receipt,
+  Send,
+} from "lucide-react";
 import type { Flag, FlagKind } from "@/lib/types";
 import { FLAG_LABEL, FLAG_TONE } from "@/lib/labels";
 import { Badge } from "./ui";
 
 const ICON: Record<FlagKind, typeof Clock> = {
+  assignment_overdue: ClipboardList,
+  assignment_due_today: ClipboardList,
   inquiry_idle: MessageSquareDot,
   followup_overdue: FileText,
   followup_due_today: Clock,
   milestone_overdue: FolderKanban,
   project_due_soon: FolderKanban,
   log_missing: Clock,
+  docs_outstanding: MailQuestion,
+  submission_due: Send,
+  qc_waiting: BadgeCheck,
+  balance_due: Receipt,
+  balance_overdue: Receipt,
+  phase_ready: FolderKanban,
+  authority_followup: Landmark,
+  query_open: Landmark,
 };
 
 const SHELL: Record<Flag["severity"], string> = {
@@ -35,10 +57,9 @@ export function FlagCard({ flag }: { flag: Flag }) {
     <Link
       href={flag.href}
       className={clsx(
-        "group flex flex-col rounded-2xl p-4 ring-1 transition-shadow hover:shadow-[var(--shadow-pop)]",
+        "group flex flex-col rounded-2xl p-4 ring-1 transition-colors",
         SHELL[flag.severity],
       )}
-      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div className="flex items-start justify-between gap-2">
         <span

@@ -6,6 +6,7 @@ import { useNow } from "@/lib/now";
 import { blocksForDay } from "@/lib/seed";
 import { workWeek } from "@/lib/date";
 import { LegendItem, Panel, RingMeter } from "./ui";
+import { activeEmployees } from "@/lib/rules";
 
 /**
  * One ratio in the centre (the week's credited completion) with the block
@@ -19,7 +20,7 @@ export function WeekRing({ scope }: { scope: "me" | "team" }) {
   const tally = useMemo(() => {
     const people =
       scope === "team"
-        ? users.filter((u) => u.role === "employee")
+        ? activeEmployees(users)
         : users.filter((u) => u.id === currentUserId);
     const week = workWeek(now);
     const t = { done: 0, partial: 0, missed: 0, pending: 0 };
@@ -43,7 +44,7 @@ export function WeekRing({ scope }: { scope: "me" | "team" }) {
   return (
     <Panel
       title="This week"
-      subtitle={scope === "team" ? "Across the team" : "Your blocks"}
+      subtitle={scope === "team" ? "Across the team" : "Your tasks"}
     >
       <RingMeter
         segments={[
@@ -64,7 +65,8 @@ export function WeekRing({ scope }: { scope: "me" | "team" }) {
       </div>
 
       <p className="mt-3 border-t border-line pt-3 text-[11px] leading-snug text-faint">
-        A partly-done block counts half, which is how the KPI score counts it too.
+        A partly-done block counts half, which is how the KPI score counts it
+        too.
       </p>
     </Panel>
   );

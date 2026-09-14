@@ -1,221 +1,241 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import {
-  Bell,
-  LayoutGrid,
-  ListChecks,
-  ChevronDown,
-  CircleHelp,
+  ChevronRight,
+  ClipboardList,
   FolderKanban,
-  Handshake,
+  Inbox,
   LayoutDashboard,
-  LifeBuoy,
-  ScrollText,
-  Settings,
+  LogOut,
   SquareCheckBig,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import { useTaskey } from "@/lib/store";
-import type { Role } from "@/lib/types";
-import { useFlags } from "@/lib/selectors";
 import { useNow } from "@/lib/now";
-import { prettyDate } from "@/lib/date";
-import { Avatar, Badge } from "./ui";
-import { OverwhelmedButton } from "./OverwhelmedButton";
-import { GlobalSearch } from "./GlobalSearch";
+import { dayKey } from "@/lib/date";
+import { SignOutButton } from "@clerk/nextjs";
+import { ROLE_SHORT } from "@/lib/labels";
+import { MessageBar } from "./MessageBar";
+import { Avatar } from "./ui";
+import type { Role } from "@/lib/types";
 
 type NavItem = {
   href: string;
   label: string;
-  icon: typeof LayoutGrid;
+  icon: typeof ClipboardList;
   roles: Role[];
 };
 
+/**
+ * The daily checklist and the old admin pages are still on disk, just out of
+ * the app until we get to them, so nothing in this shell should link at them.
+ *
+ * Dashboard is one route with two screens behind it: the practice for
+ * management, your own day for everybody else. The numbers are management's
+ * alone, so the item is only there for them.
+ */
 const NAV: NavItem[] = [
-  { href: "/overview", label: "Overview", icon: LayoutGrid, roles: ["employee", "admin"] },
-  { href: "/tasks", label: "My tasks", icon: ListChecks, roles: ["employee", "admin"] },
-  { href: "/leads", label: "Leads & quotes", icon: Handshake, roles: ["employee", "admin"] },
-  { href: "/projects", label: "Projects", icon: FolderKanban, roles: ["employee", "admin"] },
-  { href: "/admin", label: "Admin dashboard", icon: LayoutDashboard, roles: ["admin"] },
-  { href: "/admin/audit", label: "Audit trail", icon: ScrollText, roles: ["admin"] },
+  {
+    href: "/dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    roles: ["employee", "admin"],
+  },
+  {
+    href: "/tasks",
+    label: "Tasks",
+    icon: ClipboardList,
+    roles: ["employee", "admin"],
+  },
+  {
+    href: "/leads",
+    label: "Leads",
+    icon: Inbox,
+    roles: ["employee", "admin"],
+  },
+  {
+    href: "/projects",
+    label: "Projects",
+    icon: FolderKanban,
+    roles: ["employee", "admin"],
+  },
+  {
+    href: "/employees",
+    label: "Employees",
+    icon: Users,
+    roles: ["admin"],
+  },
+  {
+    href: "/kpis",
+    label: "The numbers",
+    icon: TrendingUp,
+    roles: ["admin"],
+  },
 ];
 
-const firstName = (name: string) => name.split(" ")[0];
+const HOME = "/dashboard";
+
+/**
+ * Routes that are real but carry no nav item of their own, so the redirect
+ * below does not bounce off them.
+ */
+const OFF_NAV = ["/account"];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const now = useNow();
-  const { users, currentUserId, setCurrentUser, escalations } = useTaskey();
+  const { users, currentUserId, ensureRecurring } = useTaskey();
   const me = users.find((u) => u.id === currentUserId)!;
-  const flags = useFlags();
+  const today = dayKey(now);
 
-  const myFlagCount = flags.filter(
-    (f) => me.role === "admin" || f.ownerId === me.id,
-  ).length;
-  const openEscalations = escalations.filter((e) => e.status === "open").length;
+  // Standing duties appear because the day arrived, not because anybody
+  // handed them out. This is idempotent, so it can run on every load and
+  // again when the clock rolls past midnight.
+  useEffect(() => {
+    ensureRecurring(today);
+  }, [ensureRecurring, today]);
+
   const visibleNav = NAV.filter((item) => item.roles.includes(me.role));
 
+  // A parked page is only parked if there is no way in: a deep link or an
+  // old bookmark still resolves, so anything off the map goes home.
+  const onOwnMap =
+    visibleNav.some(
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+    ) || OFF_NAV.some((href) => pathname.startsWith(href));
+
+  useEffect(() => {
+    if (!onOwnMap) router.replace(HOME);
+  }, [onOwnMap, router]);
+
   return (
-    <div className="min-h-dvh md:p-5">
-      {/* The app is one floating sheet on the periwinkle ground. No
-          overflow-hidden here, or the sticky sidebar stops sticking. */}
-      <div
-        className="mx-auto flex min-h-[calc(100dvh-40px)] w-full max-w-[1420px] bg-sheet md:rounded-[26px]"
-        style={{ boxShadow: "var(--shadow-sheet)" }}
-      >
-        {/* --- sidebar ------------------------------------------------- */}
-        <aside className="sticky top-5 hidden max-h-[calc(100dvh-40px)] w-[236px] shrink-0 flex-col overflow-y-auto bg-sheet md:flex md:rounded-l-[26px]">
-          <div className="flex h-[68px] items-center gap-2 px-5">
-            <span className="grid size-8 place-items-center rounded-xl bg-accent text-white">
-              <SquareCheckBig size={17} strokeWidth={2.4} />
-            </span>
-            <span className="text-[21px] font-bold tracking-tight">
-              Taskey<span className="text-accent">.</span>
-            </span>
-          </div>
+    <div className="min-h-dvh">
+      {/* The sidebar is pinned to the left edge of the viewport and scrolls
+          on its own, so the page underneath can scroll past it. */}
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[236px] flex-col overflow-y-auto border-r border-line bg-sheet md:flex">
+        <div className="flex h-[68px] items-center gap-2 px-5">
+          <span className="grid size-8 place-items-center rounded-xl bg-accent text-white">
+            <SquareCheckBig size={17} strokeWidth={2.4} />
+          </span>
+          <span className="text-[21px] font-bold tracking-tight">
+            Taskey<span className="text-accent">.</span>
+          </span>
+        </div>
 
-          <nav className="flex-1 space-y-1 px-3 py-2">
-            {visibleNav.map((item) => {
-              const active =
-                pathname === item.href ||
-                (item.href !== "/admin" && pathname.startsWith(`${item.href}/`));
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={clsx(
-                    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all",
-                    active
-                      ? "bg-accent text-white"
-                      : "text-muted hover:bg-sunken hover:text-ink",
-                  )}
-                  style={active ? { boxShadow: "var(--shadow-accent)" } : undefined}
-                >
-                  <Icon size={17} strokeWidth={2} />
-                  <span className="flex-1">{item.label}</span>
-                  {item.href === "/admin" && openEscalations > 0 && (
-                    <Badge tone={active ? "neutral" : "danger"}>{openEscalations}</Badge>
-                  )}
-                </Link>
-              );
-            })}
-
-            <div className="pt-1">
-              {[
-                { label: "Support", icon: CircleHelp },
-                { label: "Settings", icon: Settings },
-              ].map(({ label, icon: Icon }) => (
-                <button
-                  key={label}
-                  type="button"
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-muted transition-colors hover:bg-sunken hover:text-ink"
-                >
-                  <Icon size={17} strokeWidth={2} />
-                  {label}
-                </button>
-              ))}
-            </div>
-          </nav>
-
-          {/* The reference puts a promo card here. Taskey puts the thing that
-              actually needs to be one click away. */}
-          {me.role === "employee" && (
-            <div className="px-3 pb-3">
-              <div className="rounded-2xl bg-gradient-to-br from-accent to-purple px-4 py-4 text-center">
-                <span className="mx-auto grid size-9 place-items-center rounded-xl bg-white/20 text-white">
-                  <LifeBuoy size={18} />
-                </span>
-                <p className="mt-2 text-[13px] font-semibold text-white">
-                  Falling behind?
-                </p>
-                <p className="mt-1 text-[11px] leading-snug text-white/80">
-                  Flag it now instead of explaining it later.
-                </p>
-                <div className="mt-3">
-                  <OverwhelmedButton onDark compact />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Demo affordance: real deployments get this from the session. */}
-          <div className="px-3 pb-4">
-            <label className="eyebrow mb-1.5 block px-1">Viewing as</label>
-            <select
-              value={currentUserId}
-              onChange={(e) => setCurrentUser(e.target.value)}
-              className="field h-9 py-0 text-[12px]"
-              aria-label="Switch user"
-            >
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name} · {u.jobTitle}
-                </option>
-              ))}
-            </select>
-          </div>
-        </aside>
-
-        {/* --- main ---------------------------------------------------- */}
-        <div className="flex min-w-0 flex-1 flex-col bg-content md:rounded-r-[26px] md:border-l md:border-line">
-          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 md:h-[68px] md:flex-nowrap md:px-6 md:py-0">
-            <GlobalSearch />
-
-            <div className="flex items-center gap-3">
-              <span className="hidden text-xs text-muted lg:block">
-                {prettyDate(now)}
-              </span>
-
-              <button
-                type="button"
-                title={`${myFlagCount} items need action`}
-                className="relative grid size-9 place-items-center rounded-full bg-surface text-muted ring-1 ring-line transition-colors hover:text-ink"
-              >
-                <Bell size={16} />
-                {myFlagCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 grid min-w-4 place-items-center rounded-full bg-pink px-1 text-[9px] font-bold leading-4 text-white ring-2 ring-content">
-                    {myFlagCount}
-                  </span>
-                )}
-              </button>
-
-              <div className="flex items-center gap-2 rounded-full bg-surface py-1 pl-1 pr-2.5 ring-1 ring-line">
-                <Avatar name={me.name} tint={me.tint} size={28} />
-                <div className="hidden min-w-0 leading-tight sm:block">
-                  <p className="truncate text-[12px] font-semibold">
-                    {firstName(me.name)}
-                  </p>
-                  <p className="truncate text-[10px] text-muted">{me.jobTitle}</p>
-                </div>
-                <ChevronDown size={13} className="text-faint" />
-              </div>
-            </div>
-          </header>
-
-          {/* Mobile nav */}
-          <nav className="flex gap-1 overflow-x-auto px-3 py-2 md:hidden">
-            {visibleNav.map((item) => (
+        <nav className="flex-1 space-y-1 px-3 py-2">
+          {visibleNav.map((item) => {
+            const active =
+              pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const Icon = item.icon;
+            return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={clsx(
-                  "whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium",
-                  pathname === item.href
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all",
+                  active
                     ? "bg-accent text-white"
-                    : "bg-surface text-muted ring-1 ring-line",
+                    : "text-muted hover:bg-sunken hover:text-ink",
                 )}
               >
-                {item.label}
+                <Icon size={17} strokeWidth={2} />
+                <span className="flex-1">{item.label}</span>
               </Link>
-            ))}
-          </nav>
+            );
+          })}
+        </nav>
 
-          <main className="w-full flex-1 p-4 md:p-6">{children}</main>
+        {/* Who is signed in: their own account, and the way out. Not a
+            choice of person any more, which is what makes the trail mean
+            something. */}
+        <div className="border-t border-line p-3">
+          <Link
+            href="/account"
+            className={clsx(
+              "flex items-center gap-2.5 rounded-xl px-2 py-2 transition-colors",
+              pathname === "/account" ? "bg-accent-soft" : "hover:bg-sunken",
+            )}
+          >
+            <Avatar name={me.name} tint={me.tint} size={28} />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[12px] font-semibold">
+                {me.name}
+              </span>
+              <span
+                className={clsx(
+                  "block truncate text-[11px]",
+                  pathname === "/account" ? "text-accent-ink" : "text-faint",
+                )}
+              >
+                {ROLE_SHORT[me.workRole]}
+              </span>
+            </span>
+            <ChevronRight size={14} className="shrink-0 text-faint" />
+          </Link>
+
+          <SignOutButton>
+            <button
+              type="button"
+              className="mt-1 flex w-full items-center gap-2.5 rounded-xl px-2 py-2 text-[12px] font-medium text-muted transition-colors hover:bg-sunken hover:text-ink"
+            >
+              <LogOut size={15} className="shrink-0" />
+              Sign out
+            </button>
+          </SignOutButton>
         </div>
+      </aside>
+
+      {/* --- main ------------------------------------------------------ */}
+      <div className="flex min-h-dvh min-w-0 flex-col bg-content md:pl-[236px]">
+        {/* Mobile nav, since the rail is hidden below md. */}
+        <nav className="flex gap-1 overflow-x-auto border-b border-line px-3 py-2 md:hidden">
+          {visibleNav.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={clsx(
+                "whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium",
+                pathname === item.href
+                  ? "bg-accent text-white"
+                  : "bg-surface text-muted ring-1 ring-line",
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <BusyBar />
+        <main className="w-full flex-1">{children}</main>
+        <MessageBar />
       </div>
     </div>
+  );
+}
+
+/**
+ * A thin line across the top of the content while the server is working.
+ *
+ * Every action here writes and then reads the whole workspace back, which
+ * takes a moment against a database in another country. Without this the
+ * screen simply sits there and the click feels lost.
+ */
+function BusyBar() {
+  const busy = useTaskey((s) => s.busy);
+  if (busy === 0) return null;
+
+  return (
+    <div
+      role="progressbar"
+      aria-busy="true"
+      aria-label="Working"
+      className="busy-bar sticky top-0 z-40 h-[3px] overflow-hidden bg-accent-soft"
+    />
   );
 }

@@ -106,7 +106,7 @@ export function AgendaRail({ me }: { me: User }) {
                     : "text-muted ring-1 ring-line hover:bg-sunken",
                 )}
               >
-                <span className="font-mono text-[15px] font-medium tabular-nums leading-none">
+                <span className="text-[15px] font-medium tabular-nums leading-none">
                   {format(d, "d")}
                 </span>
                 <span
@@ -154,7 +154,7 @@ export function AgendaRail({ me }: { me: User }) {
               {hours.map((h, i) => (
                 <span
                   key={h}
-                  className="absolute right-0 -translate-y-1/2 font-mono text-[10px] tabular-nums text-faint"
+                  className="absolute right-0 -translate-y-1/2 text-[10px] tabular-nums text-faint"
                   style={{ top: i * HOUR_PX }}
                 >
                   {String(h).padStart(2, "0")}:00
@@ -219,7 +219,7 @@ export function AgendaRail({ me }: { me: User }) {
                         )}
                       </div>
                       {height > 34 && (
-                        <p className="truncate font-mono text-[10px] tabular-nums text-faint">
+                        <p className="truncate text-[10px] tabular-nums text-faint">
                           {b.start}–{b.end} · {CATEGORY_LABEL[b.category]}
                         </p>
                       )}

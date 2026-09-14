@@ -50,11 +50,10 @@ export function TaskCard({
         "flex flex-col rounded-2xl p-4 ring-1 transition-colors",
         SHELL[block.status],
       )}
-      style={{ boxShadow: "var(--shadow-card)" }}
     >
       {/* --- when and what -------------------------------------------- */}
       <div className="flex items-start justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 font-mono text-[13px] font-medium tabular-nums">
+        <span className="inline-flex items-center gap-1.5 text-[13px] font-medium tabular-nums">
           <Clock size={13} className="text-faint" />
           {block.start} – {block.end}
         </span>

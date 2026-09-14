@@ -77,7 +77,7 @@ export function OverwhelmedButton({
       );
 
     return [
-      { group: "Today's time blocks", items: blocks },
+      { group: "Today's tasks", items: blocks },
       { group: "Open leads & quotes", items: leadItems },
       { group: "Project milestones", items: milestoneItems },
     ].filter((g) => g.items.length > 0);
