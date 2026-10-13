@@ -115,7 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [onOwnMap, router]);
 
   return (
-    <div className="min-h-dvh">
+    <div className="taskey-workspace min-h-dvh">
       {/* The sidebar is pinned to the left edge of the viewport and scrolls
           on its own, so the page underneath can scroll past it. */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[236px] flex-col overflow-y-auto border-r border-line bg-sheet md:flex">
@@ -193,38 +193,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* --- main ------------------------------------------------------ */}
       <div className="flex min-h-dvh min-w-0 flex-col bg-content md:pl-[236px]">
-        {/* Mobile nav, since the rail is hidden below md. The account sits
-            at the end of it: on a phone the rail is the only way to your own
-            account and the way out, and the rail is not there. */}
-        <nav className="tab-strip flex items-center gap-1 border-b border-line px-3 py-2 md:hidden">
-          {visibleNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={clsx(
-                "whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium",
-                pathname === item.href
-                  ? "bg-accent text-white"
-                  : "bg-surface text-muted ring-1 ring-line",
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-
-          <Link
-            href="/account"
-            aria-label={`Your account, ${me.name}`}
-            className={clsx(
-              "ml-1 flex shrink-0 items-center gap-1.5 rounded-full py-1 pl-1 pr-2.5 text-[13px] font-medium",
-              pathname === "/account"
-                ? "bg-accent text-white"
-                : "bg-surface text-muted ring-1 ring-line",
-            )}
-          >
-            <Avatar name={me.name} tint={me.tint} size={22} />
-            You
-          </Link>
+        <header className="taskey-mobile-header md:hidden">
+          <Link href="/dashboard" className="taskey-mobile-brand"><SquareCheckBig size={22} />Taskey<span>.</span></Link>
+          <Link href="/account" aria-label={`Your account, ${me.name}`}><Avatar name={me.name} tint={me.tint} size={34} /></Link>
+        </header>
+        <nav className="taskey-mobile-nav md:hidden" aria-label="Main navigation">
+          {visibleNav.slice(0, 4).map((item) => {
+            const Icon = item.icon;
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            return <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} className={active ? "is-active" : ""}><Icon size={21} /><span>{item.label === "Dashboard" ? "Home" : item.label}</span></Link>;
+          })}
+          <details className="taskey-mobile-more" key={pathname}>
+            <summary aria-label="More navigation"><Users size={21} /><span>More</span></summary>
+            <div className="taskey-mobile-menu">
+              {visibleNav.slice(4).map((item) => { const Icon = item.icon; return <Link key={item.href} href={item.href}><Icon size={19} />{item.label}</Link>; })}
+              <Link href="/account"><Avatar name={me.name} tint={me.tint} size={24} />Your account</Link>
+              <SignOutButton><button type="button"><LogOut size={19} />Sign out</button></SignOutButton>
+            </div>
+          </details>
         </nav>
 
         <BusyBar />

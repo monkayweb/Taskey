@@ -79,7 +79,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
   return (
     <li
       className={clsx(
-        "border-l-2",
+        "taskey-lead border-l-2",
         breached || (slack !== null && slack < 0)
           ? "border-l-danger"
           : slack === 0
@@ -87,7 +87,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
             : "border-l-transparent",
       )}
     >
-      <div className="flex flex-wrap items-start gap-x-3 gap-y-2 px-5 py-3">
+      <div className="taskey-lead-summary flex flex-wrap items-start gap-x-3 gap-y-2 px-5 py-3">
         <Avatar name={owner.name} tint={owner.tint} size={26} />
 
         <div className="min-w-0 flex-1">

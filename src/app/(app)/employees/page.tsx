@@ -216,7 +216,7 @@ export default function EmployeesPage() {
                           own page, so this list stays browsable. */}
                       <Link
                         href={`/employees/${u.id}`}
-                        className="flex items-center gap-3 rounded-xl bg-surface px-3 py-3 ring-1 ring-line transition-colors hover:ring-line-strong sm:gap-4 sm:px-4"
+                        className="taskey-person-row flex items-center gap-3 rounded-xl bg-surface px-3 py-3 ring-1 ring-line transition-colors hover:ring-line-strong sm:gap-4 sm:px-4"
                       >
                         <Avatar name={u.name} tint={u.tint} size={40} />
 

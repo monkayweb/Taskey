@@ -141,7 +141,7 @@ export function StatTile({
       className={clsx(
         // Two of these sit side by side on a phone, so the padding and the
         // number both step down rather than the label wrapping to three lines.
-        "px-4 py-3.5 sm:px-5 sm:py-4",
+        "taskey-stat px-4 py-3.5 sm:px-5 sm:py-4",
         filled ? "rounded-2xl bg-accent" : "card",
       )}
     >
